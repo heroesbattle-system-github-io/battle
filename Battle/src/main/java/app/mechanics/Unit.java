@@ -1,8 +1,11 @@
 package app.mechanics;
 
+import app.server.MainServer;
+
 import java.util.ArrayList;
 
 public class Unit {
+    private int team;
     private int type; // 1-close 2-archer 3-mage
     private String name;
     private String description;
@@ -15,8 +18,9 @@ public class Unit {
     private int count;
     private boolean isDead;
 
-    public Unit(int id) {
+    public Unit(int id, int team) {
         /*Работа для Егора*/
+        this.team = team;
         squadHP = hp * count;
     }
 
@@ -24,7 +28,7 @@ public class Unit {
         if (attack > target.defence) {
             double damage = count * (1 + (attack - target.defence) * 0.05);
             int countToKill = (int) damage / target.hp;
-            target.squadHP-=damage;
+            target.squadHP -= damage;
             if (target.squadHP <= 0) {
                 target.isDead = true;
                 target.count = 0;
@@ -79,6 +83,14 @@ public class Unit {
         return count;
     }*/
 
+    public int getTeam() {
+        return team;
+    }
+
+    public int getInitiative() {
+        return initiative;
+    }
+
     public int getType() {
         return type;
     }
@@ -100,6 +112,7 @@ public class Unit {
                         "\nDescription: \n" + description;
     }
 
-    public void takeDamage() {
+    public int getPlayer() {
+        return team;
     }
 }

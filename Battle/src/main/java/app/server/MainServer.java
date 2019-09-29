@@ -45,10 +45,14 @@ public class MainServer {
                     }
                 }
                 int gameId = nextGameId++;
-                gameMap.put(gameId, new GameServer(gameId));
+                gameMap.put(gameId, new GameServer(gameId,this));
                 ctx.send("/connect " + gameId);
             default:
                 break;
         }
+    }
+
+    public void closeGameServer(int id){
+        gameMap.remove(id);
     }
 }

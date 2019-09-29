@@ -1,7 +1,9 @@
 package app.mechanics;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Arrays;
+
+import app.helpers.Functions;
 
 public class Team {
     private Unit[] line1;
@@ -10,7 +12,7 @@ public class Team {
     private boolean[] emptyLines;   //true if line is empty or all units dead
     private boolean empty;          // true if all units are dead
 
-    private Map<Integer,Unit> initiativeMap;
+    //private Map<Integer,Unit> initiativeMap;
 
     public Team(int id) {
         /*     Заполнение тимы из БД для Егора         */
@@ -19,7 +21,27 @@ public class Team {
             emptyLines[i] = false;
         }
         empty = false;
+        // сортировка юнитов по инициативе
     }
+
+    public ArrayList<Unit> getAllUnits() {
+        ArrayList<Unit> units = new ArrayList<>();
+        for (Unit u : line1) {
+            if (u != null) units.add(u);
+        }
+        for (Unit u : line3) {
+            if (u != null) units.add(u);
+        }
+        for (Unit u : line2) {
+            if (u != null) units.add(u);
+        }
+        /*Unit[] srt = units.toArray(new Unit[0]);
+        units.clear();
+        Functions.doSort(srt, 1, srt.length - 1);
+        units.addAll(Arrays.asList(srt));*/
+        return units;
+    }
+
 
     public boolean checkTeam() {
         boolean dead = true;
