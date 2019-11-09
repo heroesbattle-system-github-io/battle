@@ -1,3 +1,49 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.overflow-company {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    z-index: 99999;
+    visibility: visible;
+    opacity: 1;
+    background: black;
+    transition: all .5s linear;
+}
+
+.overflow-company.fadeOut{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.container {
+    position: relative;
+    min-height: 100vh !important;
+    background-image: url('../assets/locations/bg.jpg');
+    background-position-y: 100%;
+    background-repeat: no-repeat;
+}
+
+.container .diagram-wrapper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    bottom: 0;
+}
+
+.container .diagram-wrapper #diagram-movement-range {
+    position: absolute;
+    height: 80%;
+    width: 90%;
+    top: 5%;
+    left: 20%;
+    margin: 0;
+}
+
 .wait-status-bar {
     position: absolute;
     top: 50%;
@@ -6,4 +52,80 @@
     background: whitesmoke;
     border: 1px solid gray;
     padding: 40px 20px;
+}
+
+.origin polygon {
+    fill: rgba(0, 0, 0, 0.5);
+}
+
+.samerow polygon {
+    fill: hsl(120, 20%, 90%);
+}
+
+.shadow polygon {
+    fill: hsl(60, 10%, 90%);
+}
+
+.highlight polygon {
+    fill: hsl(60, 100%, 85%);
+}
+
+.wall polygon {
+    fill: hsl(0, 20%, 70%);
+}
+
+.unit-position polygon {
+    fill: rgba(0, 0, 0, 0) !important
+}
+
+.origin.active-hex polygon {
+    fill: rgba(0, 0, 0, 0.7) !important
+}
+
+polygon {
+    fill: rgba(0, 0, 0, 0.7) !important
+}
+
+text {
+    display: none;
+}
+
+.small {
+    font-size: 93px;
+    color: red;
+    fill: red;
+}
+
+.test-animation-image {
+    position: absolute;
+    /* height: 109px;
+    width: 100px; */
+    background: url('https://www.spriters-resource.com/resources/sheets/42/44977.png') 0px -192px;
+    top: 15%;
+    left: 17%;
+    z-index: 99998;
+}
+
+#image {
+    height: 109px;
+    width: 96px;
+    background: url('https://www.spriters-resource.com/resources/sheets/42/44977.png') 0px -180px;
+    cursor: pointer;
+    margin: 0;   
+}
+
+#image.on-hover-image {
+    border: 2px solid red;
+}
+
+#image.active-unit {
+    border: 2px solid greenyellow;
+}
+
+g {
+    z-index: 999;
+}
+
+.second-units {
+    transform: scaleX(-1);
 }
