@@ -43,7 +43,7 @@ images.forEach(image => {
 });
 
 function nextTurn() {
-    socket.send(`{"gameID": ${gameID}, "message":"next turn"}`)
+    socket.send(`{"gameID": ${gameID}, "message":"End Turn"}`)
 }
 
 function startAttackProcesses(activeUnit, yourTurn) {

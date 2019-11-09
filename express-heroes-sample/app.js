@@ -3,7 +3,7 @@ let WebSocketServer = new require('ws');
 const { Client } = require("./classes/Client.class");
 const { GameRoom } = require("./classes/GameRoom.class");
 
-let gameRooms = [new GameRoom(1, null, null)];
+let gameRooms = [new GameRoom(1, null, null, "")];
 let numberOfClients = 1;
 let clients = [];
 
@@ -18,12 +18,23 @@ function someServerCalculationAboutUnit(gameRoom) {
   gameRoom.secondClient.ctx.send(`{"unitNumber":1}`);
 }
 
+function updateTurnStatus(gameRoom) {
+  if (gameRoom.turn === "firstPlayer") {
+    gameRoom.firstClient.ctx.send(`{"yourTurn":true}`);
+    gameRoom.secondClient.ctx.send(`{"yourTurn":false}`);
+  }
+  else if (gameRoom.turn === "secondPlayer") {
+    gameRoom.firstClient.ctx.send(`{"yourTurn":false}`);
+    gameRoom.secondClient.ctx.send(`{"yourTurn":true}`);
+  }
+}
+
 function sendStartGame(gameRoom) {
   gameRoom.firstClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
   gameRoom.secondClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
+  gameRoom.turn = "firstPlayer";
 
-  gameRoom.firstClient.ctx.send(`{"yourTurn":true}`);
-  gameRoom.secondClient.ctx.send(`{"yourTurn":false}`);
+  updateTurnStatus(gameRoom)
 
   someServerCalculationAboutUnit(gameRoom);
 }
@@ -58,20 +69,25 @@ webSocketServer.on('connection', function (ws) {
     }
   }
   if (allRoomsBusy) {
-    gameRooms.push(new GameRoom(newGameRoomId, null, null));
+    gameRooms.push(new GameRoom(newGameRoomId, null, null, ""));
     gameRooms[gameRooms.length - 1].firstClient = client;
   }
 
   ws.on('message', function (message) {
     let msgData = JSON.parse(message)
-    if (msgData.message === "next turn") {
+ 
+    if (msgData.message === "End Turn") {
       for (let i = 0; i < gameRooms.length; i++) {
         if (gameRooms[i].id === msgData.gameID) {
-          gameRooms[i].firstClient.ctx.send(`{"yourTurn":false}`);
-          gameRooms[i].secondClient.ctx.send(`{"yourTurn":true}`);
+          console.log(gameRooms[i].turn)
+          if (gameRooms[i].turn === "firstPlayer") gameRooms[i].turn = "secondPlayer"
+          else if (gameRooms[i].turn === "secondPlayer") gameRooms[i].turn = "firstPlayer"
+          console.log(gameRooms[i].turn)
+          updateTurnStatus(gameRooms[i])
         }
       }
     }
+
   });
 
   ws.on('close', function () {
