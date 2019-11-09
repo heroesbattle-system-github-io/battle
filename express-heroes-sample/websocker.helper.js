@@ -5,6 +5,9 @@ const _helper = {
     YOUR_TURN_TRUE_JSON: '{"yourTurn":true}',
     YOUR_TURN_FALSE_JSON: '{"yourTurn":false}',
 
+    PLAYER_FIRST_TYPE_JSON: '{"type":"first"}',
+    PLAYER_SECOND_TYPE_JSON: '{"type":"second"}',
+
     updateTurnStatus(gameRoom) {
         if (gameRoom.turn === this.FIRST_PLAYER_TURN) {
             gameRoom.firstClient.ctx.send(this.YOUR_TURN_TRUE_JSON);
@@ -23,14 +26,20 @@ const _helper = {
         gameRoom.firstClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
         gameRoom.secondClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
     },
-
+ 
     startGame(gameRoom) {
         gameRoom.firstClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
         gameRoom.secondClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
         gameRoom.turn = this.FIRST_PLAYER_TURN;
 
-        this.updateTurnStatus(gameRoom)
+        this.sendPlayerHisType(gameRoom);
+        this.updateTurnStatus(gameRoom);
         this.setUnitMovingOrder(gameRoom);
+    },
+
+    sendPlayerHisType(gameRoom) {
+        gameRoom.firstClient.ctx.send(this.PLAYER_FIRST_TYPE_JSON);
+        gameRoom.secondClient.ctx.send(this.PLAYER_SECOND_TYPE_JSON);
     }
 }
 

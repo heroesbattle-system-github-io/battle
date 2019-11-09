@@ -10,7 +10,7 @@ let clients = [];
 
 var webSocketServer = new WebSocketServer.Server({
   port: 4451
-});
+}); 
 
 webSocketServer.on('connection', function (ws) {
   let clientID = numberOfClients++;
@@ -21,7 +21,7 @@ webSocketServer.on('connection', function (ws) {
     newGameRoomId = numberOfGameRooms + 1;
 
   let allRoomsBusy = true;
-
+     
   for (let i = 0; i < gameRooms.length; i++) {
     if (gameRooms[i].firstClient === null && gameRooms[i].secondClient === null) {
       gameRooms[i].firstClient = client;
@@ -55,12 +55,13 @@ webSocketServer.on('connection', function (ws) {
         if (gameRooms[i].id === msgData.gameID) {
           if (gameRooms[i].turn === "firstPlayer") gameRooms[i].turn = "secondPlayer"
           else if (gameRooms[i].turn === "secondPlayer") gameRooms[i].turn = "firstPlayer"
-          _helper.updateTurnStatus(gameRooms[i])
+          _helper.updateTurnStatus(gameRooms[i]);
+          _helper.setUnitMovingOrder(gameRooms[i]);
         }
       }
     }
-  });
-
+  });  
+   
   ws.on('close', function () {
     for (let i = 0; i < clients.length; i++) {
       if (clients[i]["id"] === clientID) {
