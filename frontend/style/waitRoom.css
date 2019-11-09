@@ -122,10 +122,14 @@ text {
     border: 2px solid greenyellow;
 }
 
+#image.attacked {
+    border: 2px solid blueviolet;
+}
+
 g {
     z-index: 999;
 }
 
-.second-units {
+.unit-second {
     transform: scaleX(-1);
 }

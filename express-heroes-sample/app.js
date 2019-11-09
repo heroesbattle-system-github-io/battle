@@ -3,7 +3,7 @@ let WebSocketServer = new require('ws');
 const { Client } = require("./classes/Client.class");
 const { GameRoom } = require("./classes/GameRoom.class");
 const { _helper } = require("./websocker.helper")
-
+ 
 let gameRooms = [new GameRoom(1, null, null, "")];
 let numberOfClients = 1;
 let clients = [];
@@ -49,19 +49,32 @@ webSocketServer.on('connection', function (ws) {
 
   ws.on('message', function (message) {
     let msgData = JSON.parse(message)
-
+         
     if (msgData.message === "End Turn") {
       for (let i = 0; i < gameRooms.length; i++) {
         if (gameRooms[i].id === msgData.gameID) {
           if (gameRooms[i].turn === "firstPlayer") gameRooms[i].turn = "secondPlayer"
           else if (gameRooms[i].turn === "secondPlayer") gameRooms[i].turn = "firstPlayer"
+          
           _helper.updateTurnStatus(gameRooms[i]);
           _helper.setUnitMovingOrder(gameRooms[i]);
         }
       }
+    } 
+        
+    if(msgData.message === "attackMonster"){
+      for (let i = 0; i < gameRooms.length; i++) {
+        if (gameRooms[i].id === msgData.gameID) {
+          let type = msgData.type,
+            attackerId = msgData.attacker,
+            attackTargetId = msgData.attackTarget;
+
+            _helper.processAttackEvent(type, attackerId, attackTargetId, gameRooms[i])
+        }
+      }
     }
   });  
-   
+       
   ws.on('close', function () {
     for (let i = 0; i < clients.length; i++) {
       if (clients[i]["id"] === clientID) {

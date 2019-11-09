@@ -26,7 +26,7 @@ const _helper = {
         gameRoom.firstClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
         gameRoom.secondClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
     },
- 
+
     startGame(gameRoom) {
         gameRoom.firstClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
         gameRoom.secondClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
@@ -40,6 +40,24 @@ const _helper = {
     sendPlayerHisType(gameRoom) {
         gameRoom.firstClient.ctx.send(this.PLAYER_FIRST_TYPE_JSON);
         gameRoom.secondClient.ctx.send(this.PLAYER_SECOND_TYPE_JSON);
+    },
+
+    processAttackEvent(type, attackerId, attackTargetId, gameRoom) {
+        // some calculation
+        console.log(type);
+        gameRoom.firstClient.ctx.send(`{
+            "damage":${12},
+            "attacker": ${attackerId}, 
+            "attackTarget":${attackTargetId},
+            "typeAttacker":"${type}"
+        }`);
+
+        gameRoom.secondClient.ctx.send(`{
+            "damage":${12},
+            "attacker": ${attackerId}, 
+            "attackTarget":${attackTargetId},
+            "typeAttacker":"${type}"
+        }`);
     }
 }
 

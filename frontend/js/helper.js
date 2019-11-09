@@ -36,19 +36,20 @@ const _helper = {
         }
         
         images.forEach(image => {
-            image.addEventListener("mouseover", (ev) => {
-                if (yourTurn === false) return;
-                image.classList.add("on-hover-image");
-            })
+            // image.addEventListener("mouseover", (ev) => {
+            //     if (yourTurn === false) return;
+            //     image.classList.add("on-hover-image");
+            // })
 
-            image.addEventListener("mouseleave", (ev) => {
-                if (yourTurn === false) return;
-                image.classList.remove("on-hover-image");
-            })
+            // image.addEventListener("mouseleave", (ev) => {
+            //     if (yourTurn === false) return;
+            //     image.classList.remove("on-hover-image");
+            // })
 
             image.addEventListener("click", (ev) => {
                 if (yourTurn === false) return;
-                endTurn()
+                requestForAnimation(ev.target)
+                // endTurn()
             })
         });
     },
