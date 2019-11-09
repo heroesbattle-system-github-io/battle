@@ -1,0 +1,9 @@
+.wait-status-bar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: whitesmoke;
+    border: 1px solid gray;
+    padding: 40px 20px;
+}
