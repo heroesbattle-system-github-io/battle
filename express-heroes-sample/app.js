@@ -63,7 +63,15 @@ webSocketServer.on('connection', function (ws) {
   }
 
   ws.on('message', function (message) {
-   console.log(message)
+    let msgData = JSON.parse(message)
+    if (msgData.message === "next turn") {
+      for (let i = 0; i < gameRooms.length; i++) {
+        if (gameRooms[i].id === msgData.gameID) {
+          gameRooms[i].firstClient.ctx.send(`{"yourTurn":false}`);
+          gameRooms[i].secondClient.ctx.send(`{"yourTurn":true}`);
+        }
+      }
+    }
   });
 
   ws.on('close', function () {
