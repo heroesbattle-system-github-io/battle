@@ -1,49 +1,50 @@
 let WebSocketServer = new require('ws');
 
-const ZERO_IN_ROOM = 0;
-const ONE_IN_ROOM = 1;
-const TWO_IN_ROOM = 2;
+const { Client } = require("./classes/Client.class");
+const { GameRoom } = require("./classes/GameRoom.class");
 
-let gameRooms = [ZERO_IN_ROOM];
-let clients = {};
+let gameRooms = [new GameRoom(1, null, null)];
+let clients = [];
 
 var webSocketServer = new WebSocketServer.Server({
   port: 4451
 });
 
+function sendStartGame(gameRoom) {
+  gameRoom.firstClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
+  gameRoom.secondClient.ctx.send(`{"roomID":"${gameRoom.id}"}`)
+}
+
 webSocketServer.on('connection', function (ws) {
-  let roomId = 1,
-    allBusyRooms = true,
-    startNewGame = false;
+  let numberOfClients = clients.length,
+    newClientId = numberOfClients + 1,
+    client = new Client(ws, newClientId);
+  clients.push(client);
+
+  let numberOfGameRooms = gameRooms.length,
+    newGameRoomId = numberOfGameRooms + 1;
+
+  let allRoomsBusy = true;
 
   for (let i = 0; i < gameRooms.length; i++) {
-
-    if (gameRooms[i] === ONE_IN_ROOM) {
-      roomId = i;
-      gameRooms[i]++;
-      allBusyRooms = false;
-      startNewGame = true;
-
-    } else if (gameRooms[i] !== TWO_IN_ROOM) {
-      roomId = i;
-      gameRooms[i]++;
-      allBusyRooms = false
+    if (gameRooms[i].firstClient === null && gameRooms[i].secondClient === null) {
+      gameRooms[i].firstClient = client;
+      allRoomsBusy = false;
+    }
+    else if (gameRooms[i].firstClient === null && gameRooms[i].secondClient !== null) {
+      gameRooms[i].firstClient = client;
+      allRoomsBusy = false;
+      sendStartGame(gameRooms[i]);
+    }
+    else if (gameRooms[i].firstClient !== null && gameRooms[i].secondClient === null) {
+      gameRooms[i].secondClient = client;
+      allRoomsBusy = false;
+      sendStartGame(gameRooms[i]);
     }
   }
-
-  if (allBusyRooms) {
-    gameRooms.push(ONE_IN_ROOM);
-    roomId = gameRooms.length - 1
-  }
-
-  const clientId = Object.keys(clients).length + 1;
-  clients[clientId] = ws;
-  clients[clientId].send(`{"roomID":"${roomId}"}`)
- 
-  if (startNewGame) {
-    for (const key in clients) {
-      clients[key].send(`{"startGame":"${true}", "roomID":"${roomId}"}`);
-    }
+  if (allRoomsBusy) {
+    gameRooms.push(new GameRoom(newGameRoomId, null, null));
+    gameRooms[gameRooms.length - 1].firstClient = client;
   }
 
   // ws.on('message', function (message) {
@@ -55,8 +56,19 @@ webSocketServer.on('connection', function (ws) {
   // });
 
   ws.on('close', function () {
-    console.log('closing connection ' + clientId);
-    delete clients[clientId];
+    
+    for (let i = 0; i < clients.length; i++) {
+      if (clients[i]["id"] === newClientId) { clients.splice(i, 1); }
+    }
+
+    for (let i = 0; i < gameRooms.length; i++) {
+      console.log(gameRooms[i]["firstClient"].id, newClientId)
+      if (gameRooms[i]["firstClient"].id === newClientId) {
+        gameRooms[i]["firstClient"] = null;
+      } else if (gameRooms[i]["secondClient"].id === newClientId) {
+        gameRooms[i]["secondClient"] = null;
+      }
+    }
   });
 
 });
