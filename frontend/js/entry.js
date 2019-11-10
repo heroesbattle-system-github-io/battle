@@ -43,6 +43,11 @@ socket.onmessage = function (event) {
         attackerType = jsonData["typeAttacker"];
         attackAnimation(activeUnit, attackTarget, type);
     }
+
+    if (jsonData["allDie"] !== undefined) {
+        console.log(type + " win game");
+        socket.close();
+    }
 };
 
 function attackAnimation(attacker, attackTarget, type) {

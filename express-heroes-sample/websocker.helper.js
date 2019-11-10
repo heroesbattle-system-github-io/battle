@@ -91,7 +91,7 @@ const _helper = {
             }
             unitOrderFirst[unitKey].was = true
         }
- 
+
         let unitMoveId = unitKey[unitKey.length - 1]
 
         gameRoom.firstClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
@@ -116,7 +116,7 @@ const _helper = {
     sendPlayerHisType(gameRoom) {
         gameRoom.firstClient.ctx.send(this.PLAYER_FIRST_TYPE_JSON);
         gameRoom.secondClient.ctx.send(this.PLAYER_SECOND_TYPE_JSON);
-    }, 
+    },
 
     processAttackEvent(type, attackerId, attackTargetId, gameRoom, unitOrderFirst, unitOrderSecond) {
 
@@ -134,22 +134,38 @@ const _helper = {
         let damage = attacker.amountInStack * attacker.maxDamage * (attacker.attack / attackTarget.defence);
         let killUnits = Math.round(damage / attackTarget.health);
         if (killUnits === 0) killUnits = 1;
- 
+
         let isDied = false;
         if (type === "second") {
             unitOrderFirst["unit-first-" + String(attackTargetId)].amountInStack -= killUnits;
             if (unitOrderFirst["unit-first-" + attackTargetId].amountInStack <= 0) {
                 unitOrderFirst["unit-first-" + attackTargetId].isDied = true;
                 isDied = true;
+                let allDied = true;
+                for (const key in unitOrderFirst) {
+                    if (!unitOrderFirst[key].isDied) allDied = false;
+                }
+                if (allDied) {
+                    gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":${type}}`)
+                    return;
+                }
             }
         } else if (type === "first") {
             unitOrderSecond["unit-second-" + String(attackTargetId)].amountInStack -= killUnits;
             if (unitOrderSecond["unit-second-" + attackTargetId].amountInStack <= 0) {
                 unitOrderSecond["unit-second-" + attackTargetId].isDied = true;
                 isDied = true;
+                let allDied = true;
+                for (const key in unitOrderSecond) {
+                    if (!unitOrderSecond[key].isDied) allDied = false;
+                }
+                if (allDied) {
+                    gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":${type}}`)
+                    return;
+                }
             }
         }
-        
+
         gameRoom.firstClient.ctx.send(`{
             "damage":${killUnits},
             "attacker": ${attackerId}, 
