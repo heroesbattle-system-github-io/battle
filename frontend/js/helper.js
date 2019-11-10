@@ -27,6 +27,20 @@ const _helper = {
         document.querySelector(".unit-second-5")
     ],
 
+    unitHealthBarNames: [
+        document.querySelector(".health-unit-first-1"),
+        document.querySelector(".health-unit-first-2"),
+        document.querySelector(".health-unit-first-3"),
+        document.querySelector(".health-unit-first-4"),
+        document.querySelector(".health-unit-first-5"),
+
+        document.querySelector(".health-unit-second-1"),
+        document.querySelector(".health-unit-second-2"),
+        document.querySelector(".health-unit-second-3"),
+        document.querySelector(".health-unit-second-4"),
+        document.querySelector(".health-unit-second-5")
+    ],
+
     setUnitsEventListener(playerType) {
         let images = null;
         if (playerType === "first") {
@@ -34,7 +48,7 @@ const _helper = {
         } else if (playerType === "second") {
             images = document.querySelectorAll(".unit-first");
         }
-        
+
         images.forEach(image => {
             // image.addEventListener("mouseover", (ev) => {
             //     if (yourTurn === false) return;
@@ -49,7 +63,6 @@ const _helper = {
             image.addEventListener("click", (ev) => {
                 if (yourTurn === false) return;
                 requestForAnimation(ev.target)
-                // endTurn()
             })
         });
     },
@@ -59,20 +72,24 @@ const _helper = {
         overBack.classList.add("fadeOut")
     },
 
-    initUnitPositionOnScreen(image, elementPositionedBy) {
+    initUnitPositionOnScreen(image, elementPositionedBy, healthBar) {
         let offset = elementPositionedBy.getBoundingClientRect();
         let centerX = offset.top + offset.width / 2;
         let centerY = offset.left + offset.height / 2;
 
-        image.style.left = centerY - 50 + 'px';
-        image.style.top = centerX - 100 + 'px';
+        image.style.left = centerY - 40 + 'px';
+        image.style.top = centerX - 80 + 'px';
+
+        healthBar.style.left = centerY - 25 + 'px';
+        healthBar.style.top = image.offsetTop + image.offsetHeight - 14+ 'px';
     },
 
     initUnitsPositionOnScreen() {
         for (let i = 0; i < this.initialUnitsPositionsOnScreen.length; i++) {
             this.initUnitPositionOnScreen(
                 this.unitDOMElementNames[i],
-                this.initialUnitsPositionsOnScreen[i]
+                this.initialUnitsPositionsOnScreen[i],
+                this.unitHealthBarNames[i]
             )
         }
     }

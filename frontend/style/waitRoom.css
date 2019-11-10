@@ -15,7 +15,7 @@ body {
     transition: all .5s linear;
 }
 
-.overflow-company.fadeOut{
+.overflow-company.fadeOut {
     opacity: 0;
     visibility: hidden;
 }
@@ -100,18 +100,30 @@ text {
     position: absolute;
     /* height: 109px;
     width: 100px; */
-    background: url('https://www.spriters-resource.com/resources/sheets/42/44977.png') 0px -192px;
+    /* background: url('https://www.spriters-resource.com/resources/sheets/42/44977.png') 0px -192px; */
     top: 15%;
     left: 17%;
     z-index: 99998;
 }
 
+.health-bar {
+    position: absolute;
+    background: #4e2570;
+    color: white;
+    border: 1px solid white;
+    height: 20px;
+    width: 50px;
+    text-align: center;
+    z-index: 99998;
+}
+
 #image {
-    height: 109px;
-    width: 96px;
-    background: url('https://www.spriters-resource.com/resources/sheets/42/44977.png') 0px -180px;
+    height: 90px;
+    width: 90px;
+    background-image: url('../assets/2D_Archer_Spritesheets_1024x1024/Shoot_Stand/shoot_stand_000.png');
+    background-size: contain;
     cursor: pointer;
-    margin: 0;   
+    margin: 0;
 }
 
 #image.on-hover-image {

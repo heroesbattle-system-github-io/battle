@@ -47,27 +47,56 @@ function attackAnimation(attacker, attackTarget, type) {
 
     if (type === "first" && yourTurn === true) {
         activeUnitImg = document.querySelector(`.unit-second-${attackTarget}`);
+        healthBar = document.querySelector(`.health-unit-second-${attackTarget}`);
     } else if (type === "first" && yourTurn !== true) {
         activeUnitImg = document.querySelector(`.unit-first-${attackTarget}`);
+        healthBar = document.querySelector(`.health-unit-first-${attackTarget}`);
     } else if (type === "second" && yourTurn === true) {
         activeUnitImg = document.querySelector(`.unit-first-${attackTarget}`);
+        healthBar = document.querySelector(`.health-unit-first-${attackTarget}`);
     } else if (type === "second" && yourTurn !== true) {
         activeUnitImg = document.querySelector(`.unit-second-${attackTarget}`);
+        healthBar = document.querySelector(`.health-unit-second-${attackTarget}`);
     }
 
     activeUnitImg.classList.add("attacked")
+    attackTechno(damageGiven, healthBar, activeUnitImg);
+    attackAnimateAnimation();
 
     setTimeout(() => {
         activeUnitImg.classList.remove("attacked")
+        let images = document.querySelector(".active-unit");
+        images.classList.remove("active-unit")
 
-        if (type === attackerType) {
-            endTurn();
-            let images = document.querySelectorAll("#images");
-            images.forEach(img => {
-                img.classList.remove("active-unit")
-            });
-        }
-    }, 500)
+        setTimeout(() => {
+            if (type === attackerType) endTurn();
+        }, 500);
+    }, 2200)
+}
+
+function attackTechno(damageGiven, attackTarget, unit) {
+    let health = Number(attackTarget.textContent);
+
+    health -= damageGiven;
+
+    attackTarget.textContent = health;
+}
+
+function attackAnimateAnimation() {
+    let image = document.querySelector(".active-unit");
+
+    let iterator = 0;
+
+    let animation = setInterval(() => {
+        let string;
+        if (iterator < 10) string = "0" + iterator;
+        else string = iterator
+
+        image.style.backgroundImage = `url("../assets/2D_Archer_Spritesheets_1024x1024/Shoot_Stand/shoot_stand_0${string}.png")`;
+        iterator++
+    }, 100);
+
+    setTimeout(function () { clearInterval(animation); }, 2100);
 }
 
 function requestForAnimation(target) {

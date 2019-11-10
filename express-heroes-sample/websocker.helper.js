@@ -33,7 +33,7 @@ const _helper = {
                 break;
             }
         }
-
+          
         if (allRoomsBusy) {
             gameRooms.push(new GameRoom(newGameRoomId, null, null, ""));
             gameRooms[gameRooms.length - 1].firstClient = client;
@@ -41,7 +41,7 @@ const _helper = {
 
         return gameRooms;
     },
-
+      
     updateTurnStatus(gameRoom) {
         if (gameRoom.turn === this.FIRST_PLAYER_TURN) {
             gameRoom.firstClient.ctx.send(this.YOUR_TURN_TRUE_JSON);
@@ -51,7 +51,7 @@ const _helper = {
             gameRoom.firstClient.ctx.send(this.YOUR_TURN_FALSE_JSON);
             gameRoom.secondClient.ctx.send(this.YOUR_TURN_TRUE_JSON);
         }
-    },
+    },       
 
     setUnitMovingOrder(gameRoom) {
         //calculate move order
@@ -60,7 +60,7 @@ const _helper = {
         gameRoom.firstClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
         gameRoom.secondClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
     },
-
+    
     startGame(gameRoom) {
         gameRoom.firstClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
         gameRoom.secondClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
@@ -70,7 +70,7 @@ const _helper = {
         this.updateTurnStatus(gameRoom);
         this.setUnitMovingOrder(gameRoom);
     },
-
+ 
     sendPlayerHisType(gameRoom) {
         gameRoom.firstClient.ctx.send(this.PLAYER_FIRST_TYPE_JSON);
         gameRoom.secondClient.ctx.send(this.PLAYER_SECOND_TYPE_JSON);
@@ -118,7 +118,7 @@ const _helper = {
                 gameRooms[i]["secondClient"] = null;
             }
         }
-
+        
         return gameRooms
     }
 }
