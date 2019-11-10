@@ -4,6 +4,11 @@ const { Client } = require("./classes/Client.class");
 const { GameRoom } = require("./classes/GameRoom.class");
 const { _helper } = require("./websocker.helper")
 
+const { defaultUnitMapFirstPlayer, defaultUnitMapSecondPlayer } = require('./Unit/unit.class');
+
+let unitOrderFirst = defaultUnitMapFirstPlayer,
+  unitOrderSecond = defaultUnitMapSecondPlayer
+
 let gameRooms = [new GameRoom(1, null, null, "")];
 let clients = [];
 let numberOfClients = 1;
@@ -20,7 +25,15 @@ webSocketServer.on('connection', function (ws) {
 
   clients.push(client);
 
-  gameRooms = _helper.putPlayerInGameRoom(gameRooms, client, newGameRoomId);
+  let data = _helper.putPlayerInGameRoom(
+    gameRooms,
+    client,
+    newGameRoomId,
+    unitOrderFirst,
+    unitOrderSecond
+  );
+  
+  gameRooms = data.gameRooms
 
   ws.on('message', function (message) {
     let msgData = JSON.parse(message)
@@ -35,7 +48,7 @@ webSocketServer.on('connection', function (ws) {
             gameRooms[i].turn = "firstPlayer"
 
           _helper.updateTurnStatus(gameRooms[i]);
-          _helper.setUnitMovingOrder(gameRooms[i]);
+          _helper.setUnitMovingOrder(gameRooms[i], unitOrderFirst, unitOrderSecond);
         }
 
       }
@@ -51,7 +64,7 @@ webSocketServer.on('connection', function (ws) {
 
           _helper.processAttackEvent(type, attackerId, attackTargetId, gameRooms[i])
         }
-        
+
       }
     }
   });
