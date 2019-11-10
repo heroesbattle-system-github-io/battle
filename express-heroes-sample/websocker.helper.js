@@ -132,7 +132,7 @@ const _helper = {
         }
 
         let damage = attacker.amountInStack * attacker.maxDamage * (attacker.attack / attackTarget.defence);
-        let killUnits = Math.round(damage / (attackTarget.amountInStack * attackTarget.health));
+        let killUnits = Math.round(damage / attackTarget.health);
         if (killUnits === 0) killUnits = 1;
  
         let isDied = false;
