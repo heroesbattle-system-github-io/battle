@@ -6,12 +6,14 @@ let gameID = undefined,
     activeUnitType = "",
     attackTarget = null,
     attacker = null,
+    isDiedUnit = false,
     type = "";
 
 _helper.initUnitsPositionOnScreen()
 
 socket.onmessage = function (event) {
     const incomingMessage = event.data;
+    console.log(incomingMessage);
     let jsonData = JSON.parse(incomingMessage);
 
     if (jsonData["roomID"] !== undefined) {
@@ -36,6 +38,7 @@ socket.onmessage = function (event) {
     if (jsonData["damage"] !== undefined) {
         damageGiven = jsonData["damage"];
         attacker = jsonData["attacker"];
+        isDiedUnit = jsonData["isDied"];
         attackTarget = jsonData["attackTarget"];
         attackerType = jsonData["typeAttacker"];
         attackAnimation(activeUnit, attackTarget, type);
@@ -64,7 +67,8 @@ function attackAnimation(attacker, attackTarget, type) {
     attackAnimateAnimation();
 
     setTimeout(() => {
-        activeUnitImg.classList.remove("attacked")
+        activeUnitImg.classList.remove("attacked");
+        if (isDiedUnit) activeUnitImg.style.visibility = "hidden";
         let images = document.querySelector(".active-unit");
         images.classList.remove("active-unit")
 

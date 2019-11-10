@@ -32,7 +32,7 @@ webSocketServer.on('connection', function (ws) {
     unitOrderFirst,
     unitOrderSecond
   );
-  
+
   gameRooms = data.gameRooms
 
   ws.on('message', function (message) {
@@ -62,9 +62,18 @@ webSocketServer.on('connection', function (ws) {
             attackerId = msgData.attacker,
             attackTargetId = msgData.attackTarget;
 
-          _helper.processAttackEvent(type, attackerId, attackTargetId, gameRooms[i])
-        }
+          let units = _helper.processAttackEvent(
+            type,
+            attackerId,
+            attackTargetId,
+            gameRooms[i],
+            unitOrderFirst,
+            unitOrderSecond
+          );
 
+          unitOrderFirst = units.unitOrderFirst
+          unitOrderSecond = units.unitOrderSecond
+        }
       }
     }
   });
