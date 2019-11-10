@@ -56,7 +56,9 @@ const _helper = {
         if (gameRoom.turn === this.SECOND_PLAYER_TURN) {
             maxInitiative = 0
             for (const key in unitOrderSecond) {
-                if (unitOrderSecond[key].initiative > maxInitiative && unitOrderSecond[key].was !== true) {
+                if (unitOrderSecond[key].initiative > maxInitiative &&
+                    unitOrderSecond[key].was !== true &&
+                    unitOrderSecond[key].isDied !== true) {
                     maxInitiative = unitOrderSecond[key].initiative;
                     unitKey = key
                 }
@@ -64,7 +66,9 @@ const _helper = {
             if (maxInitiative === 0) {
                 for (const key in unitOrderSecond) unitOrderSecond[key].was = false;
                 for (const key in unitOrderSecond) {
-                    if (unitOrderSecond[key].initiative > maxInitiative && unitOrderSecond[key].was !== true && unitOrderSecond[key].isDied !== true) {
+                    if (unitOrderSecond[key].initiative > maxInitiative &&
+                        unitOrderSecond[key].was !== true &&
+                        unitOrderSecond[key].isDied !== true) {
                         maxInitiative = unitOrderSecond[key].initiative;
                         unitKey = key
                     }
@@ -75,15 +79,19 @@ const _helper = {
         else if (gameRoom.turn === this.FIRST_PLAYER_TURN) {
             maxInitiative = 0
             for (const key in unitOrderFirst) {
-                if (unitOrderFirst[key].initiative > maxInitiative && unitOrderFirst[key].was !== true && unitOrderFirst[key].isDied !== true) {
+                if (unitOrderFirst[key].initiative > maxInitiative &&
+                    unitOrderFirst[key].was !== true &&
+                    unitOrderFirst[key].isDied !== true) {
                     maxInitiative = unitOrderFirst[key].initiative;
                     unitKey = key
                 }
-            }
+            } 
             if (maxInitiative === 0) {
                 for (const key in unitOrderFirst) unitOrderFirst[key].was = false;
                 for (const key in unitOrderFirst) {
-                    if (unitOrderFirst[key].initiative > maxInitiative && unitOrderFirst[key].was !== true) {
+                    if (unitOrderFirst[key].initiative > maxInitiative &&
+                        unitOrderFirst[key].was !== true &&
+                        unitOrderFirst[key].isDied !== true) {
                         maxInitiative = unitOrderFirst[key].initiative;
                         unitKey = key
                     }
