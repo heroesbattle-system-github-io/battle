@@ -9,7 +9,15 @@ const { defaultUnitMapFirstPlayer, defaultUnitMapSecondPlayer } = require('./Uni
 let unitOrderFirst = defaultUnitMapFirstPlayer,
   unitOrderSecond = defaultUnitMapSecondPlayer
 
-let gameRooms = [new GameRoom(1, null, null, "", unitOrderFirst, unitOrderSecond)];
+let gameRooms = [
+  new GameRoom(1,
+    null,
+    null,
+    "",  
+    JSON.parse(JSON.stringify(unitOrderFirst)),
+    JSON.parse(JSON.stringify(unitOrderSecond)))
+];
+
 let clients = [];
 let numberOfClients = 1;
 

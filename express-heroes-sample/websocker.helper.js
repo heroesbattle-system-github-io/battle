@@ -48,11 +48,14 @@ const _helper = {
                 gameRooms[i] = gameRoom
             }
         }
-  
+
         if (allGameRoomsBusy) {
             let newGameRoomId = gameRooms.length + 1
-            gameRooms.push(new GameRoom(newGameRoomId, null, null, "",
-                defaultUnitMapFirstPlayer, defaultUnitMapSecondPlayer));
+            gameRooms.push(new GameRoom(
+                newGameRoomId, null, null, "",
+                JSON.parse(JSON.stringify(defaultUnitMapFirstPlayer)),
+                JSON.parse(JSON.stringify(defaultUnitMapSecondPlayer))));
+
             gameRooms[gameRooms.length - 1].firstClient = player;
         }
 
