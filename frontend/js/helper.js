@@ -1,4 +1,17 @@
 const _helper = {
+    MSG_START_GAME: "start game",
+    MSG_PLAYER_TYPE: "player type",
+    MSG_TURN_STATUS: "turn status",
+    MSG_SET_ACTIVE_UNIT: "set active unit",
+    MSG_ATTACK_EVENT: "attack event",
+    MSG_ALL_DIED: "all died",
+
+    FIRST_PLAYER: "first",
+    SECOND_PLAYER: "second",
+
+    UNITS_FIRST_PLAYER_SELECTOR: ".unit-first",
+    UNITS_SECOND_PLAYER_SELECTOR: ".unit-second",
+
     initialUnitsPositionsOnScreen: [
         document.querySelector('g[transform="translate(-450,-952)"]'),
         document.querySelector('g[transform="translate(-600,-693)"]'),
@@ -41,23 +54,47 @@ const _helper = {
         document.querySelector(".health-unit-second-5")
     ],
 
-    setUnitsEventListener(playerType) {
+    startGame() {
+        const waitOverflowBackground = document.querySelector(".wait-overflow");
+        waitOverflowBackground.classList.add("fadeOut")
+    },
+
+    setUnitsEventListener(socket, playerType) {
         let images = null;
-        if (playerType === "first") {
-            images = document.querySelectorAll(".unit-second");
-        } else if (playerType === "second") {
-            images = document.querySelectorAll(".unit-first");
-        }
+
+        if (playerType === this.FIRST_PLAYER)
+            images = document.querySelectorAll(this.UNITS_SECOND_PLAYER_SELECTOR);
+        else if (playerType === this.SECOND_PLAYER)
+            images = document.querySelectorAll(this.UNITS_FIRST_PLAYER_SELECTOR);
 
         images.forEach(image => {
-            // if (yourTurn === true) {
-            //     image.style.cursor = `url("../assets/attack.cur"), default`
-            // }
             image.addEventListener("click", (ev) => {
                 if (yourTurn === false) return;
-                requestForAnimation(ev.target)
+                this.requestToAttack(socket, ev.target)
             })
         });
+    },
+
+    requestToAttack(socket, target) {
+        const targetNames = target.classList;
+
+        for (let i = 0; i < targetNames.length; i++) {
+            if (targetNames[i].includes("unit-second-") ||
+                targetNames[i].includes("unit-first-")) {
+                let attackTargetIDPosition = targetNames[i].length - 1;
+                let attackTargetID = targetNames[i][attackTargetIDPosition];
+
+                attackTarget = attackTargetID
+            }
+        }
+
+        socket.send(`{
+                "gameID": ${gameID},
+                "type": "${type}", 
+                "attacker": ${activeUnit}, 
+                "attackTarget":${attackTarget}, 
+                "message":"attackMonster"
+            }`)
     },
 
     cursorSetter(playerType) {
@@ -73,11 +110,6 @@ const _helper = {
                 image.style.cursor = `url("../assets/attack.cur"), default`
             }
         });
-    },
-
-    startGame() {
-        let overBack = document.querySelector(".wait-overflow");
-        overBack.classList.add("fadeOut")
     },
 
     endGame(msg) {

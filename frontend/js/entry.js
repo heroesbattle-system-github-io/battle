@@ -13,39 +13,39 @@ _helper.initUnitsPositionOnScreen()
 
 socket.onmessage = function (event) {
     const incomingMessage = event.data;
-    console.log(incomingMessage)
     let jsonData = JSON.parse(incomingMessage);
 
-    if (jsonData["roomID"] !== undefined) {
+    if (jsonData["message"] === _helper.MSG_START_GAME) {
         gameID = jsonData["roomID"];
         _helper.startGame();
     }
 
-    if (jsonData["type"] !== undefined) {
+    if (jsonData["message"] === _helper.MSG_PLAYER_TYPE) {
         type = jsonData["type"];
-        _helper.setUnitsEventListener(type);
     }
 
-    if (jsonData["yourTurn"] !== undefined) {
+    if (jsonData["message"] === _helper.MSG_TURN_STATUS) {
         yourTurn = jsonData["yourTurn"];
+        attackTarget = _helper.setUnitsEventListener(socket, type);
         _helper.cursorSetter(type)
     }
 
-    if (jsonData["unitNumber"] !== undefined) {
+    if (jsonData["message"] === _helper.MSG_SET_ACTIVE_UNIT) {
         activeUnit = jsonData["unitNumber"];
         startAttackProcesses(activeUnit, yourTurn);
     }
 
-    if (jsonData["damage"] !== undefined) {
+    if (jsonData["message"] === _helper.MSG_ATTACK_EVENT) {
         damageGiven = jsonData["damage"];
         attacker = jsonData["attacker"];
         isDiedUnit = jsonData["isDied"];
         attackTarget = jsonData["attackTarget"];
         attackerType = jsonData["typeAttacker"];
+
         attackAnimation(activeUnit, attackTarget, type);
     }
 
-    if (jsonData["allDie"] !== undefined) {
+    if (jsonData["allDie"] === _helper.MSG_ALL_DIED) {
         let winSTatusMessage = type + " win game";
         setTimeout(() => {
             _helper.endGame(winSTatusMessage);
@@ -110,27 +110,6 @@ function attackAnimateAnimation() {
     }, 100);
 
     setTimeout(function () { clearInterval(animation); }, 2100);
-}
-
-function requestForAnimation(target) {
-
-    let attackTargetNumber;
-    for (let i = 0; i < target.classList.length; i++) {
-        if (target.classList[i].includes("unit-second-") ||
-            target.classList[i].includes("unit-first-")) {
-            attackTargetNumber = target.classList[i][target.classList[i].length - 1];
-
-            attackTarget = attackTargetNumber
-        }
-    }
-
-    socket.send(`{
-            "gameID": ${gameID},
-            "type": "${type}", 
-            "attacker": ${activeUnit}, 
-            "attackTarget":${attackTargetNumber}, 
-            "message":"attackMonster"
-        }`)
 }
 
 function endTurn() {
