@@ -5,11 +5,14 @@ const _helper = {
     FIRST_PLAYER_TURN: "firstPlayer",
     SECOND_PLAYER_TURN: "secondPlayer",
 
-    YOUR_TURN_TRUE_JSON: '{"yourTurn":true}',
-    YOUR_TURN_FALSE_JSON: '{"yourTurn":false}',
+    FIRST_PLAYER_TYPE: "first",
+    SECOND_PLAYER_TYPE: "second",
 
-    PLAYER_FIRST_TYPE_JSON: '{"type":"first"}',
-    PLAYER_SECOND_TYPE_JSON: '{"type":"second"}',
+    YOUR_TURN_TRUE_JSON: '{"message":"turn status", "yourTurn":true}',
+    YOUR_TURN_FALSE_JSON: '{"message":"turn status", "yourTurn":false}',
+
+    PLAYER_FIRST_TYPE_JSON: '{"message":"player type", "type":"first"}',
+    PLAYER_SECOND_TYPE_JSON: '{"message":"player type", "type":"second"}',
 
     END_TURN_MESSAGE: "End Turn",
     ATTACK_MONSTER_MESSAGE: "attackMonster",
@@ -46,6 +49,27 @@ const _helper = {
         return { unitOrderFirst, unitOrderSecond, gameRooms };
     },
 
+    startGame(gameRoom, unitOrderFirst, unitOrderSecond, gameRooms) {
+        gameRoom.firstClient.ctx.send(`{"message":"start game", "roomID":"${gameRoom.id}"}`);
+        gameRoom.secondClient.ctx.send(`{"message":"start game", "roomID":"${gameRoom.id}"}`);
+
+        gameRoom.turn = this.SECOND_PLAYER_TURN;
+
+        this.sendPlayerHisType(gameRoom);
+        this.updateTurnStatus(gameRoom);
+
+        let units = this.setUnitMovingOrder(gameRoom, unitOrderFirst, unitOrderSecond);
+        let unitsFirstPlayer = units.unitOrderFirst,
+            unitsSecondPlayer = units.unitOrderSecond;
+
+        return { unitsFirstPlayer, unitsSecondPlayer, gameRooms }
+    },
+
+    sendPlayerHisType(gameRoom) {
+        gameRoom.firstClient.ctx.send(this.PLAYER_FIRST_TYPE_JSON);
+        gameRoom.secondClient.ctx.send(this.PLAYER_SECOND_TYPE_JSON);
+    },
+
     updateTurnStatus(gameRoom) {
         if (gameRoom.turn === this.FIRST_PLAYER_TURN) {
             gameRoom.firstClient.ctx.send(this.YOUR_TURN_TRUE_JSON);
@@ -60,87 +84,65 @@ const _helper = {
     setUnitMovingOrder(gameRoom, unitOrderFirst, unitOrderSecond) {
         let maxInitiative, unitKey
         if (gameRoom.turn === this.SECOND_PLAYER_TURN) {
-            maxInitiative = 0
-            for (const key in unitOrderSecond) {
-                if (unitOrderSecond[key].initiative > maxInitiative &&
-                    unitOrderSecond[key].was !== true &&
-                    unitOrderSecond[key].isDied !== true) {
-                    maxInitiative = unitOrderSecond[key].initiative;
-                    unitKey = key
-                }
-            }
+            let unitData = this.findMaxInitiativeUnit(unitOrderSecond);
+            maxInitiative = unitData.maxInitiative;
+            unitKey = unitData.unitKey
+
             if (maxInitiative === 0) {
                 for (const key in unitOrderSecond) unitOrderSecond[key].was = false;
-                for (const key in unitOrderSecond) {
-                    if (unitOrderSecond[key].initiative > maxInitiative &&
-                        unitOrderSecond[key].was !== true &&
-                        unitOrderSecond[key].isDied !== true) {
-                        maxInitiative = unitOrderSecond[key].initiative;
-                        unitKey = key
-                    }
-                }
+
+                unitData = this.findMaxInitiativeUnit(unitOrderSecond);
+                maxInitiative = unitData.maxInitiative;
+                unitKey = unitData.unitKey
             }
             unitOrderSecond[unitKey].was = true
         }
         else if (gameRoom.turn === this.FIRST_PLAYER_TURN) {
-            maxInitiative = 0
-            for (const key in unitOrderFirst) {
-                if (unitOrderFirst[key].initiative > maxInitiative &&
-                    unitOrderFirst[key].was !== true &&
-                    unitOrderFirst[key].isDied !== true) {
-                    maxInitiative = unitOrderFirst[key].initiative;
-                    unitKey = key
-                }
-            }
+            let unitData = this.findMaxInitiativeUnit(unitOrderFirst);
+            maxInitiative = unitData.maxInitiative;
+            unitKey = unitData.unitKey
+            
             if (maxInitiative === 0) {
                 for (const key in unitOrderFirst) unitOrderFirst[key].was = false;
-                for (const key in unitOrderFirst) {
-                    if (unitOrderFirst[key].initiative > maxInitiative &&
-                        unitOrderFirst[key].was !== true &&
-                        unitOrderFirst[key].isDied !== true) {
-                        maxInitiative = unitOrderFirst[key].initiative;
-                        unitKey = key
-                    }
-                }
+
+                unitData = this.findMaxInitiativeUnit(unitOrderFirst);
+                maxInitiative = unitData.maxInitiative;
+                unitKey = unitData.unitKey
             }
             unitOrderFirst[unitKey].was = true
         }
 
         let unitMoveId = unitKey[unitKey.length - 1]
 
-        gameRoom.firstClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
-        gameRoom.secondClient.ctx.send(`{"unitNumber":${unitMoveId}}`);
+        gameRoom.firstClient.ctx.send(`{"message":"set active unit", "unitNumber":${unitMoveId}}`);
+        gameRoom.secondClient.ctx.send(`{"message":"set active unit", "unitNumber":${unitMoveId}}`);
 
         return { unitOrderFirst, unitOrderSecond }
     },
 
-    startGame(gameRoom, unitOrderFirst, unitOrderSecond, gameRooms) {
-        gameRoom.firstClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
-        gameRoom.secondClient.ctx.send(`{"roomID":"${gameRoom.id}"}`);
-        gameRoom.turn = this.SECOND_PLAYER_TURN;
-        this.sendPlayerHisType(gameRoom);
+    findMaxInitiativeUnit(unitsOrder) {
+        let maxInitiative = 0, unitKey;
+        for (const key in unitsOrder) {
+            if (unitsOrder[key].initiative > maxInitiative &&
+                unitsOrder[key].was !== true &&
+                unitsOrder[key].isDied !== true) {
+                maxInitiative = unitsOrder[key].initiative;
+                unitKey = key
+            }
+        }
+        console.log(unitKey)
 
-        this.updateTurnStatus(gameRoom);
-        let data = this.setUnitMovingOrder(gameRoom, unitOrderFirst, unitOrderSecond)
-        let unitFirst = data.unitOrderFirst,
-            unitSecond = data.unitOrderSecond
-        return { unitFirst, unitSecond, gameRooms }
-    },
-
-    sendPlayerHisType(gameRoom) {
-        gameRoom.firstClient.ctx.send(this.PLAYER_FIRST_TYPE_JSON);
-        gameRoom.secondClient.ctx.send(this.PLAYER_SECOND_TYPE_JSON);
+        return { maxInitiative, unitKey }
     },
 
     processAttackEvent(type, attackerId, attackTargetId, gameRoom, unitOrderFirst, unitOrderSecond) {
-
         let attacker = null,
             attackTarget = null;
 
-        if (type === "second") {
+        if (type === this.SECOND_PLAYER_TYPE) {
             attacker = unitOrderSecond["unit-second-" + attackerId];
             attackTarget = unitOrderFirst["unit-first-" + attackTargetId]
-        } else if (type === "first") {
+        } else if (type === this.FIRST_PLAYER_TYPE) {
             attacker = unitOrderFirst["unit-first-" + attackerId];
             attackTarget = unitOrderSecond["unit-second-" + attackTargetId];
         }
@@ -150,34 +152,28 @@ const _helper = {
         if (killUnits === 0) killUnits = 1;
 
         let isDied = false;
-        if (type === "second") {
+        if (type === this.SECOND_PLAYER_TYPE) {
             unitOrderFirst["unit-first-" + String(attackTargetId)].amountInStack -= killUnits;
             if (unitOrderFirst["unit-first-" + attackTargetId].amountInStack <= 0) {
                 unitOrderFirst["unit-first-" + attackTargetId].isDied = true;
                 isDied = true;
-                let allDied = true;
-                for (const key in unitOrderFirst) {
-                    if (!unitOrderFirst[key].isDied) allDied = false;
-                }
-                if (allDied) {
+
+                if (this.isAllUnitsDied(unitOrderFirst)) {
                     gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
                     gameRoom.secondClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
 
                     return { unitOrderFirst, unitOrderSecond }
                 }
             }
-        } else if (type === "first") {
+        } else if (type === this.FIRST_PLAYER_TYPE) {
             unitOrderSecond["unit-second-" + String(attackTargetId)].amountInStack -= killUnits;
             if (unitOrderSecond["unit-second-" + attackTargetId].amountInStack <= 0) {
                 unitOrderSecond["unit-second-" + attackTargetId].isDied = true;
                 isDied = true;
-                let allDied = true;
-                for (const key in unitOrderSecond) {
-                    if (!unitOrderSecond[key].isDied) allDied = false;
-                }
-                if (allDied) {
-                    gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
-                    gameRoom.secondClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
+
+                if (this.isAllUnitsDied(unitOrderSecond)) {
+                    gameRoom.firstClient.ctx.send(`{"message":"allDied", "allDie": ${allDied},"typeThatDie":"${type}"}`);
+                    gameRoom.secondClient.ctx.send(`{"message":"allDied", "allDie": ${allDied},"typeThatDie":"${type}"}`);
 
                     return { unitOrderFirst, unitOrderSecond }
                 }
@@ -185,6 +181,7 @@ const _helper = {
         }
 
         gameRoom.firstClient.ctx.send(`{
+            "message":"attack event",
             "damage":${killUnits},
             "attacker": ${attackerId}, 
             "attackTarget":${attackTargetId},
@@ -193,6 +190,7 @@ const _helper = {
         }`);
 
         gameRoom.secondClient.ctx.send(`{
+            "message":"attack event",
             "damage":${killUnits},
             "attacker": ${attackerId}, 
             "attackTarget":${attackTargetId},
@@ -201,6 +199,14 @@ const _helper = {
         }`);
 
         return { unitOrderFirst, unitOrderSecond }
+    },
+
+    isAllUnitsDied(unitsOrder) {
+        let allDied = true;
+        for (const key in unitsOrder) {
+            if (!unitsOrder[key].isDied) allDied = false;
+        }
+        return allDied
     },
 
     removeClientOnCloseEv(clients, clientID) {
