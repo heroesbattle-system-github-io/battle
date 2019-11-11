@@ -1,4 +1,3 @@
-const { Client } = require("./classes/Client.class");
 const { GameRoom } = require("./classes/GameRoom.class");
 
 const _helper = {
@@ -16,6 +15,11 @@ const _helper = {
 
     END_TURN_MESSAGE: "End Turn",
     ATTACK_MONSTER_MESSAGE: "attackMonster",
+
+    sendSocketMessageToPlayers(gameRoom, msg) {
+        gameRoom.firstClient.ctx.send(msg);
+        gameRoom.secondClient.ctx.send(msg);
+    },
 
     putPlayerInGameRoom(gameRooms, player, unitOrderFirst, unitOrderSecond) {
         let allGameRoomsBusy = true;
@@ -50,8 +54,8 @@ const _helper = {
     },
 
     startGame(gameRoom, unitOrderFirst, unitOrderSecond, gameRooms) {
-        gameRoom.firstClient.ctx.send(`{"message":"start game", "roomID":"${gameRoom.id}"}`);
-        gameRoom.secondClient.ctx.send(`{"message":"start game", "roomID":"${gameRoom.id}"}`);
+        const startGameMessage = `{"message":"start game", "roomID":"${gameRoom.id}"}`;
+        this.sendSocketMessageToPlayers(gameRoom, startGameMessage)
 
         gameRoom.turn = this.SECOND_PLAYER_TURN;
 
@@ -101,7 +105,7 @@ const _helper = {
             let unitData = this.findMaxInitiativeUnit(unitOrderFirst);
             maxInitiative = unitData.maxInitiative;
             unitKey = unitData.unitKey
-            
+
             if (maxInitiative === 0) {
                 for (const key in unitOrderFirst) unitOrderFirst[key].was = false;
 
@@ -114,8 +118,8 @@ const _helper = {
 
         let unitMoveId = unitKey[unitKey.length - 1]
 
-        gameRoom.firstClient.ctx.send(`{"message":"set active unit", "unitNumber":${unitMoveId}}`);
-        gameRoom.secondClient.ctx.send(`{"message":"set active unit", "unitNumber":${unitMoveId}}`);
+        const setActiveUnit = `{"message":"set active unit", "unitNumber":${unitMoveId}}`;
+        this.sendSocketMessageToPlayers(gameRoom, setActiveUnit)
 
         return { unitOrderFirst, unitOrderSecond }
     },
@@ -130,7 +134,6 @@ const _helper = {
                 unitKey = key
             }
         }
-        console.log(unitKey)
 
         return { maxInitiative, unitKey }
     },
@@ -159,8 +162,12 @@ const _helper = {
                 isDied = true;
 
                 if (this.isAllUnitsDied(unitOrderFirst)) {
-                    gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
-                    gameRoom.secondClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
+                    const allDiedMsg = `{
+                        "message":"all died", 
+                        "allDie": ${allDied},
+                        "typeThatDie":"${type}"
+                    }`;
+                    this.sendSocketMessageToPlayers(gameRoom, allDiedMsg)
 
                     return { unitOrderFirst, unitOrderSecond }
                 }
@@ -172,31 +179,26 @@ const _helper = {
                 isDied = true;
 
                 if (this.isAllUnitsDied(unitOrderSecond)) {
-                    gameRoom.firstClient.ctx.send(`{"message":"allDied", "allDie": ${allDied},"typeThatDie":"${type}"}`);
-                    gameRoom.secondClient.ctx.send(`{"message":"allDied", "allDie": ${allDied},"typeThatDie":"${type}"}`);
+                    const allDiedMsg = `{
+                        "message":"all died", 
+                        "allDie": ${allDied},
+                        "typeThatDie":"${type}"
+                    }`;
+                    this.sendSocketMessageToPlayers(gameRoom, allDiedMsg)
 
                     return { unitOrderFirst, unitOrderSecond }
                 }
             }
         }
-
-        gameRoom.firstClient.ctx.send(`{
+        const attackEvent = `{
             "message":"attack event",
             "damage":${killUnits},
             "attacker": ${attackerId}, 
             "attackTarget":${attackTargetId},
             "typeAttacker":"${type}",
             "isDied":${isDied}
-        }`);
-
-        gameRoom.secondClient.ctx.send(`{
-            "message":"attack event",
-            "damage":${killUnits},
-            "attacker": ${attackerId}, 
-            "attackTarget":${attackTargetId},
-            "typeAttacker":"${type}",
-            "isDied":${isDied}
-        }`);
+        }`;
+        this.sendSocketMessageToPlayers(gameRoom, attackEvent)
 
         return { unitOrderFirst, unitOrderSecond }
     },
