@@ -76,7 +76,7 @@ const _helper = {
     },
 
     startGame() {
-        let overBack = document.querySelector(".overflow-company");
+        let overBack = document.querySelector(".wait-overflow");
         overBack.classList.add("fadeOut")
     },
 

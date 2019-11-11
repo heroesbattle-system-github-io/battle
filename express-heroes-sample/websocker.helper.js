@@ -155,7 +155,7 @@ const _helper = {
             attacker = gameRoom.unitOrderFirst["unit-first-" + attackerId];
             attackTarget = gameRoom.unitOrderSecond["unit-second-" + attackTargetId];
         }
-
+      
         let damage = attacker.amountInStack * attacker.maxDamage * (attacker.attack / attackTarget.defence);
         let killUnits = Math.round(damage / attackTarget.health);
         if (killUnits === 0) killUnits = 1;
@@ -166,8 +166,9 @@ const _helper = {
             if (gameRoom.unitOrderFirst["unit-first-" + attackTargetId].amountInStack <= 0) {
                 gameRoom.unitOrderFirst["unit-first-" + attackTargetId].isDied = true;
                 isDied = true;
-
-                if (this.isAllUnitsDied(gameRoom.unitOrderFirst)) {
+                
+                let allDied = this.isAllUnitsDied(gameRoom.unitOrderFirst)
+                if (allDied) {
                     const allDiedMsg = `{
                         "message":"all died", 
                         "allDie": ${allDied},
@@ -184,7 +185,8 @@ const _helper = {
                 gameRoom.unitOrderSecond["unit-second-" + attackTargetId].isDied = true;
                 isDied = true;
 
-                if (this.isAllUnitsDied(gameRoom.unitOrderSecond)) {
+                let allDied = this.isAllUnitsDied(gameRoom.unitOrderSecond);
+                if (allDied) {
                     const allDiedMsg = `{
                         "message":"all died", 
                         "allDie": ${allDied},
