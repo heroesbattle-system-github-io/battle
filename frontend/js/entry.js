@@ -37,7 +37,7 @@ socket.onmessage = function (event) {
 
     if (jsonData["message"] === _helper.MSG_ATTACK_EVENT) {
         damageGiven = jsonData["damage"];
-        
+
         attacker = jsonData["attacker"];
         attackerType = jsonData["typeAttacker"];
 
@@ -45,13 +45,14 @@ socket.onmessage = function (event) {
         isDiedUnit = jsonData["isDied"];
 
         _helper.attackAnimation(activeUnit, attackTarget, type);
-    }
 
-    if (jsonData["allDie"] === _helper.MSG_ALL_DIED) {
-        let winSTatusMessage = type + " win game";
-        setTimeout(() => {
-            _helper.endGame(winSTatusMessage);
-            socket.close();
-        }, 2200)
+        if (jsonData["allDied"] === true) {
+            let winStatusMessage = attackerType + " win game";
+
+            setTimeout(() => {
+                _helper.endGame(winStatusMessage);
+                socket.close();
+            }, 2300)
+        }
     }
 };

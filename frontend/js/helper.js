@@ -132,13 +132,6 @@ const _helper = {
         activeUnitImg.classList.add("active-unit")
     },
 
-    endGame(msg) {
-        let winInfo = document.querySelector(".win-status");
-        winInfo.textContent = msg;
-        let overBack = document.querySelector(".win-overflow-company");
-        overBack.classList.add("fadeIn");
-    },
-
     attackAnimation(attacker, attackTarget, type) {
         let attackTargetUnit;
 
@@ -230,5 +223,13 @@ const _helper = {
                 this.unitHealthBarNames[i]
             )
         }
-    }
+    },
+
+    endGame(msg) {
+        let winInfo = document.querySelector(".win-overflow__status");
+        winInfo.textContent = msg;
+        
+        let overBack = document.querySelector(".win-overflow");
+        overBack.classList.add("fadeIn");
+    },
 }

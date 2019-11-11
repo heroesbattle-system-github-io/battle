@@ -65,6 +65,7 @@ text {
     background: black;
     border: 1px solid white;
     padding: 40px 20px;
+    color: white;
 }
 
 .grid-container {

@@ -143,7 +143,7 @@ const _helper = {
 
         return { maxInitiative, unitKey }
     },
- 
+
     processAttackEvent(type, attackerId, attackTargetId, gameRoom) {
         let attacker = null,
             attackTarget = null;
@@ -161,23 +161,14 @@ const _helper = {
         if (killUnits === 0) killUnits = 1;
 
         let isDied = false;
+        let allDied = false;
         if (type === this.SECOND_PLAYER_TYPE) {
             gameRoom.unitOrderFirst["unit-first-" + String(attackTargetId)].amountInStack -= killUnits;
             if (gameRoom.unitOrderFirst["unit-first-" + attackTargetId].amountInStack <= 0) {
                 gameRoom.unitOrderFirst["unit-first-" + attackTargetId].isDied = true;
                 isDied = true;
 
-                let allDied = this.isAllUnitsDied(gameRoom.unitOrderFirst)
-                if (allDied) {
-                    const allDiedMsg = `{
-                        "message":"all died", 
-                        "allDie": ${allDied},
-                        "typeThatDie":"${type}"
-                    }`;
-                    this.sendSocketMessageToPlayers(gameRoom, allDiedMsg)
-
-                    return gameRoom
-                }
+                allDied = this.isAllUnitsDied(gameRoom.unitOrderFirst)
             }
         } else if (type === this.FIRST_PLAYER_TYPE) {
             gameRoom.unitOrderSecond["unit-second-" + String(attackTargetId)].amountInStack -= killUnits;
@@ -185,17 +176,7 @@ const _helper = {
                 gameRoom.unitOrderSecond["unit-second-" + attackTargetId].isDied = true;
                 isDied = true;
 
-                let allDied = this.isAllUnitsDied(gameRoom.unitOrderSecond);
-                if (allDied) {
-                    const allDiedMsg = `{
-                        "message":"all died", 
-                        "allDie": ${allDied},
-                        "typeThatDie":"${type}"
-                    }`;
-                    this.sendSocketMessageToPlayers(gameRoom, allDiedMsg)
-
-                    return gameRoom.unitOrderSecond
-                }
+                allDied = this.isAllUnitsDied(gameRoom.unitOrderSecond);
             }
         }
         const attackEvent = `{
@@ -204,8 +185,9 @@ const _helper = {
             "attacker": ${attackerId}, 
             "attackTarget":${attackTargetId},
             "typeAttacker":"${type}",
-            "isDied":${isDied}
-        }`;
+            "isDied":${isDied},
+            "allDied":${allDied}
+        }`;  
         this.sendSocketMessageToPlayers(gameRoom, attackEvent)
 
         return gameRoom
@@ -218,7 +200,7 @@ const _helper = {
         }
         return allDied
     },
- 
+
     removeClientOnCloseEv(clients, clientID) {
         for (let i = 0; i < clients.length; i++) {
             if (clients[i]["id"] === clientID) {
