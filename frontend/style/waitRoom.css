@@ -148,7 +148,7 @@ text {
     width: 90px;
     background-image: url('../assets/2D_Archer_Spritesheets_1024x1024/Shoot_Stand/shoot_stand_000.png');
     background-size: contain;
-    cursor: pointer;
+    /* cursor: url("../assets/attack.cur"), default; */
     margin: 0;
 }
 

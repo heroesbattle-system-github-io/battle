@@ -28,6 +28,7 @@ socket.onmessage = function (event) {
 
     if (jsonData["yourTurn"] !== undefined) {
         yourTurn = jsonData["yourTurn"];
+        _helper.cursorSetter(type)
     }
 
     if (jsonData["unitNumber"] !== undefined) {
@@ -133,6 +134,15 @@ function requestForAnimation(target) {
 }
 
 function endTurn() {
+    if (type === "first") {
+        images = document.querySelectorAll(".unit-second");
+    } else if (type === "second") {
+        images = document.querySelectorAll(".unit-first");
+    }
+
+    images.forEach(image => {
+        image.style.cursor = "default";
+    });
     socket.send(`{"gameID": ${gameID}, "message":"End Turn"}`)
 }
 

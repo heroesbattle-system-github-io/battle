@@ -7,7 +7,7 @@ class GameRoom {
         this.unitOrderFirst = unitOrderFirst;
         this.unitOrderSecond = unitOrderSecond;
     }
-}
+}   
 
 module.exports = {
     GameRoom: GameRoom

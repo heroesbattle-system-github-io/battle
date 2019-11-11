@@ -50,10 +50,28 @@ const _helper = {
         }
 
         images.forEach(image => {
+            // if (yourTurn === true) {
+            //     image.style.cursor = `url("../assets/attack.cur"), default`
+            // }
             image.addEventListener("click", (ev) => {
                 if (yourTurn === false) return;
                 requestForAnimation(ev.target)
             })
+        });
+    },
+
+    cursorSetter(playerType) {
+        let images = null;
+        if (playerType === "first") {
+            images = document.querySelectorAll(".unit-second");
+        } else if (playerType === "second") {
+            images = document.querySelectorAll(".unit-first");
+        }
+
+        images.forEach(image => {
+            if (yourTurn === true) {
+                image.style.cursor = `url("../assets/attack.cur"), default`
+            }
         });
     },
 
