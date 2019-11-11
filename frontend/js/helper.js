@@ -11,6 +11,11 @@ const _helper = {
 
     UNITS_FIRST_PLAYER_SELECTOR: ".unit-first",
     UNITS_SECOND_PLAYER_SELECTOR: ".unit-second",
+    ACTIVE_UNIT_CLASSNAME: "active-unit",
+
+    CUSTOM_CURSOR: `url("../assets/attack.cur"), default`,
+
+    _self: this,
 
     initialUnitsPositionsOnScreen: [
         document.querySelector('g[transform="translate(-450,-952)"]'),
@@ -68,14 +73,16 @@ const _helper = {
             images = document.querySelectorAll(this.UNITS_FIRST_PLAYER_SELECTOR);
 
         images.forEach(image => {
-            image.addEventListener("click", (ev) => {
-                if (yourTurn === false) return;
-                this.requestToAttack(socket, ev.target)
-            })
+            image.addEventListener("click", this.clickUnitHandler)
         });
     },
 
-    requestToAttack(socket, target) {
+    clickUnitHandler(ev) {
+        if (yourTurn === false) return;
+        _helper.requestToAttack(ev.target)
+    },
+
+    requestToAttack(target) {
         const targetNames = target.classList;
 
         for (let i = 0; i < targetNames.length; i++) {
@@ -97,19 +104,32 @@ const _helper = {
             }`)
     },
 
-    cursorSetter(playerType) {
+    setCustomCursorToAttackTarget(playerType) {
         let images = null;
-        if (playerType === "first") {
-            images = document.querySelectorAll(".unit-second");
-        } else if (playerType === "second") {
-            images = document.querySelectorAll(".unit-first");
+        if (playerType === this.FIRST_PLAYER) {
+            images = document.querySelectorAll(this.UNITS_SECOND_PLAYER_SELECTOR);
+        } else if (playerType === this.SECOND_PLAYER) {
+            images = document.querySelectorAll(this.UNITS_FIRST_PLAYER_SELECTOR);
         }
 
         images.forEach(image => {
-            if (yourTurn === true) {
-                image.style.cursor = `url("../assets/attack.cur"), default`
-            }
+            if (yourTurn === true) image.style.cursor = this.CUSTOM_CURSOR
         });
+    },
+
+    setActiveUnit(activeUnit, yourTurn) {
+        let activeUnitImg;
+
+        if (type === this.FIRST_PLAYER && yourTurn === true)
+            activeUnitImg = document.querySelector(`.unit-first-${activeUnit}`);
+        else if (type === this.FIRST_PLAYER && yourTurn !== true)
+            activeUnitImg = document.querySelector(`.unit-second-${activeUnit}`);
+        else if (type === this.SECOND_PLAYER && yourTurn === true)
+            activeUnitImg = document.querySelector(`.unit-second-${activeUnit}`);
+        else if (type === this.SECOND_PLAYER && yourTurn !== true)
+            activeUnitImg = document.querySelector(`.unit-first-${activeUnit}`);
+
+        activeUnitImg.classList.add("active-unit")
     },
 
     endGame(msg) {
@@ -117,6 +137,77 @@ const _helper = {
         winInfo.textContent = msg;
         let overBack = document.querySelector(".win-overflow-company");
         overBack.classList.add("fadeIn");
+    },
+
+    attackAnimation(attacker, attackTarget, type) {
+        let attackTargetUnit;
+
+        if (type === this.FIRST_PLAYER && yourTurn === true) {
+            attackTargetUnit = document.querySelector(`.unit-second-${attackTarget}`);
+            healthBar = document.querySelector(`.health-unit-second-${attackTarget}`);
+        } else if (type === this.FIRST_PLAYER && yourTurn !== true) {
+            attackTargetUnit = document.querySelector(`.unit-first-${attackTarget}`);
+            healthBar = document.querySelector(`.health-unit-first-${attackTarget}`);
+        } else if (type === this.SECOND_PLAYER && yourTurn === true) {
+            attackTargetUnit = document.querySelector(`.unit-first-${attackTarget}`);
+            healthBar = document.querySelector(`.health-unit-first-${attackTarget}`);
+        } else if (type === this.SECOND_PLAYER && yourTurn !== true) {
+            attackTargetUnit = document.querySelector(`.unit-second-${attackTarget}`);
+            healthBar = document.querySelector(`.health-unit-second-${attackTarget}`);
+        }
+        attackTargetUnit.classList.add("attacked");
+
+        this.setHealthAfterGetDamage(damageGiven, healthBar);
+        this.executeAttackAnimation();
+
+        setTimeout(() => {
+            attackTargetUnit.classList.remove("attacked");
+            if (isDiedUnit) attackTargetUnit.style.visibility = "hidden";
+            let images = document.querySelector(".active-unit");
+            images.classList.remove("active-unit")
+
+            setTimeout(() => {
+                if (type === attackerType) this.endTurn();
+            }, 200);
+        }, 2250)
+    },
+
+    setHealthAfterGetDamage(damageGiven, attackTarget) {
+        let health = Number(attackTarget.textContent);
+
+        health -= damageGiven;
+
+        attackTarget.textContent = health;
+    },
+
+    executeAttackAnimation() {
+        let activeUnit = document.querySelector(".active-unit");
+        let iterator = 0;
+
+        let animation = setInterval(() => {
+            let string;
+            if (iterator < 10) string = "0" + iterator;
+            else string = iterator
+
+            activeUnit.style.backgroundImage = `url("../assets/2D_Archer_Spritesheets_1024x1024/Shoot_Stand/shoot_stand_0${string}.png")`;
+            iterator++
+        }, 100);
+
+        setTimeout(function () { clearInterval(animation); }, 2200);
+    },
+
+    endTurn() {
+        if (type === this.FIRST_PLAYER)
+            images = document.querySelectorAll(".unit-second");
+        else if (type === this.SECOND_PLAYER)
+            images = document.querySelectorAll(".unit-first");
+
+        images.forEach(image => {
+            image.style.cursor = "default";
+            image.removeEventListener("click", this.clickUnitHandler);
+        });
+
+        socket.send(`{"gameID": ${gameID}, "message":"End Turn"}`)
     },
 
     initUnitPositionOnScreen(image, elementPositionedBy, healthBar) {

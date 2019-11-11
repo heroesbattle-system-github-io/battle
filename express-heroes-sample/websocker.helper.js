@@ -10,7 +10,7 @@ const _helper = {
 
     YOUR_TURN_TRUE_JSON: '{"message":"turn status", "yourTurn":true}',
     YOUR_TURN_FALSE_JSON: '{"message":"turn status", "yourTurn":false}',
- 
+
     PLAYER_FIRST_TYPE_JSON: '{"message":"player type", "type":"first"}',
     PLAYER_SECOND_TYPE_JSON: '{"message":"player type", "type":"second"}',
 
@@ -59,20 +59,20 @@ const _helper = {
             gameRooms[gameRooms.length - 1].firstClient = player;
         }
 
-      return gameRooms
+        return gameRooms
     },
- 
+
     startGame(gameRoom) {
         const startGameMessage = `{"message":"start game", "roomID":"${gameRoom.id}"}`;
         this.sendSocketMessageToPlayers(gameRoom, startGameMessage)
 
         gameRoom.turn = this.SECOND_PLAYER_TURN;
- 
+
         this.sendPlayerHisType(gameRoom);
         this.updateTurnStatus(gameRoom);
         return this.setUnitMovingOrder(gameRoom);
     },
-        
+
     sendPlayerHisType(gameRoom) {
         gameRoom.firstClient.ctx.send(this.PLAYER_FIRST_TYPE_JSON);
         gameRoom.secondClient.ctx.send(this.PLAYER_SECOND_TYPE_JSON);
@@ -143,7 +143,7 @@ const _helper = {
 
         return { maxInitiative, unitKey }
     },
-
+ 
     processAttackEvent(type, attackerId, attackTargetId, gameRoom) {
         let attacker = null,
             attackTarget = null;
@@ -155,7 +155,7 @@ const _helper = {
             attacker = gameRoom.unitOrderFirst["unit-first-" + attackerId];
             attackTarget = gameRoom.unitOrderSecond["unit-second-" + attackTargetId];
         }
-        
+
         let damage = attacker.amountInStack * attacker.maxDamage * (attacker.attack / attackTarget.defence);
         let killUnits = Math.round(damage / attackTarget.health);
         if (killUnits === 0) killUnits = 1;
@@ -166,9 +166,9 @@ const _helper = {
             if (gameRoom.unitOrderFirst["unit-first-" + attackTargetId].amountInStack <= 0) {
                 gameRoom.unitOrderFirst["unit-first-" + attackTargetId].isDied = true;
                 isDied = true;
-                      
+
                 let allDied = this.isAllUnitsDied(gameRoom.unitOrderFirst)
-                if (allDied) { 
+                if (allDied) {
                     const allDiedMsg = `{
                         "message":"all died", 
                         "allDie": ${allDied},
@@ -218,7 +218,7 @@ const _helper = {
         }
         return allDied
     },
-
+ 
     removeClientOnCloseEv(clients, clientID) {
         for (let i = 0; i < clients.length; i++) {
             if (clients[i]["id"] === clientID) {
