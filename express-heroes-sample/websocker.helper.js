@@ -1,4 +1,5 @@
 const { GameRoom } = require("./classes/GameRoom.class");
+const { defaultUnitMapFirstPlayer, defaultUnitMapSecondPlayer } = require('./Unit/unit.class');
 
 const _helper = {
     FIRST_PLAYER_TURN: "firstPlayer",
@@ -21,11 +22,11 @@ const _helper = {
         gameRoom.secondClient.ctx.send(msg);
     },
 
-    putPlayerInGameRoom(gameRooms, player, unitOrderFirst, unitOrderSecond) {
+    putPlayerInGameRoom(gameRooms, player) {
         let allGameRoomsBusy = true;
 
         for (let i = 0; i < gameRooms.length; i++) {
-            const gameRoom = gameRooms[i];
+            let gameRoom = gameRooms[i];
 
             if (gameRoom.firstClient === null && gameRoom.secondClient === null) {
                 gameRoom.firstClient = player;
@@ -35,25 +36,30 @@ const _helper = {
             else if (gameRoom.firstClient === null && gameRoom.secondClient !== null) {
                 gameRoom.firstClient = player;
                 allGameRoomsBusy = false;
-                return this.startGame(gameRoom, unitOrderFirst, unitOrderSecond, gameRooms);
+
+                gameRoom = this.startGame(gameRoom);
+                gameRooms[i] = gameRoom
             }
             else if (gameRoom.firstClient !== null && gameRoom.secondClient === null) {
                 gameRoom.secondClient = player;
                 allGameRoomsBusy = false;
-                return this.startGame(gameRoom, unitOrderFirst, unitOrderSecond, gameRooms);
+
+                gameRoom = this.startGame(gameRoom);
+                gameRooms[i] = gameRoom
             }
         }
-
+  
         if (allGameRoomsBusy) {
             let newGameRoomId = gameRooms.length + 1
-            gameRooms.push(new GameRoom(newGameRoomId, null, null, ""));
+            gameRooms.push(new GameRoom(newGameRoomId, null, null, "",
+                defaultUnitMapFirstPlayer, defaultUnitMapSecondPlayer));
             gameRooms[gameRooms.length - 1].firstClient = player;
         }
 
-        return { unitOrderFirst, unitOrderSecond, gameRooms };
+        return gameRooms
     },
 
-    startGame(gameRoom, unitOrderFirst, unitOrderSecond, gameRooms) {
+    startGame(gameRoom) {
         const startGameMessage = `{"message":"start game", "roomID":"${gameRoom.id}"}`;
         this.sendSocketMessageToPlayers(gameRoom, startGameMessage)
 
@@ -61,12 +67,7 @@ const _helper = {
 
         this.sendPlayerHisType(gameRoom);
         this.updateTurnStatus(gameRoom);
-
-        let units = this.setUnitMovingOrder(gameRoom, unitOrderFirst, unitOrderSecond);
-        let unitsFirstPlayer = units.unitOrderFirst,
-            unitsSecondPlayer = units.unitOrderSecond;
-
-        return { unitsFirstPlayer, unitsSecondPlayer, gameRooms }
+        return this.setUnitMovingOrder(gameRoom);
     },
 
     sendPlayerHisType(gameRoom) {
@@ -85,35 +86,37 @@ const _helper = {
         }
     },
 
-    setUnitMovingOrder(gameRoom, unitOrderFirst, unitOrderSecond) {
+    setUnitMovingOrder(gameRoom) {
         let maxInitiative, unitKey
         if (gameRoom.turn === this.SECOND_PLAYER_TURN) {
-            let unitData = this.findMaxInitiativeUnit(unitOrderSecond);
+            let unitData = this.findMaxInitiativeUnit(gameRoom.unitOrderSecond);
             maxInitiative = unitData.maxInitiative;
             unitKey = unitData.unitKey
 
             if (maxInitiative === 0) {
-                for (const key in unitOrderSecond) unitOrderSecond[key].was = false;
+                for (const key in gameRoom.unitOrderSecond)
+                    gameRoom.unitOrderSecond[key].was = false;
 
-                unitData = this.findMaxInitiativeUnit(unitOrderSecond);
+                unitData = this.findMaxInitiativeUnit(gameRoom.unitOrderSecond);
                 maxInitiative = unitData.maxInitiative;
                 unitKey = unitData.unitKey
             }
-            unitOrderSecond[unitKey].was = true
+            gameRoom.unitOrderSecond[unitKey].was = true
         }
         else if (gameRoom.turn === this.FIRST_PLAYER_TURN) {
-            let unitData = this.findMaxInitiativeUnit(unitOrderFirst);
+            let unitData = this.findMaxInitiativeUnit(gameRoom.unitOrderFirst);
             maxInitiative = unitData.maxInitiative;
             unitKey = unitData.unitKey
 
             if (maxInitiative === 0) {
-                for (const key in unitOrderFirst) unitOrderFirst[key].was = false;
+                for (const key in gameRoom.unitOrderFirst)
+                    gameRoom.unitOrderFirst[key].was = false;
 
-                unitData = this.findMaxInitiativeUnit(unitOrderFirst);
+                unitData = this.findMaxInitiativeUnit(gameRoom.unitOrderFirst);
                 maxInitiative = unitData.maxInitiative;
                 unitKey = unitData.unitKey
             }
-            unitOrderFirst[unitKey].was = true
+            gameRoom.unitOrderFirst[unitKey].was = true
         }
 
         let unitMoveId = unitKey[unitKey.length - 1]
@@ -121,7 +124,7 @@ const _helper = {
         const setActiveUnit = `{"message":"set active unit", "unitNumber":${unitMoveId}}`;
         this.sendSocketMessageToPlayers(gameRoom, setActiveUnit)
 
-        return { unitOrderFirst, unitOrderSecond }
+        return gameRoom
     },
 
     findMaxInitiativeUnit(unitsOrder) {
@@ -138,16 +141,16 @@ const _helper = {
         return { maxInitiative, unitKey }
     },
 
-    processAttackEvent(type, attackerId, attackTargetId, gameRoom, unitOrderFirst, unitOrderSecond) {
+    processAttackEvent(type, attackerId, attackTargetId, gameRoom) {
         let attacker = null,
             attackTarget = null;
 
         if (type === this.SECOND_PLAYER_TYPE) {
-            attacker = unitOrderSecond["unit-second-" + attackerId];
-            attackTarget = unitOrderFirst["unit-first-" + attackTargetId]
+            attacker = gameRoom.unitOrderSecond["unit-second-" + attackerId];
+            attackTarget = gameRoom.unitOrderFirst["unit-first-" + attackTargetId]
         } else if (type === this.FIRST_PLAYER_TYPE) {
-            attacker = unitOrderFirst["unit-first-" + attackerId];
-            attackTarget = unitOrderSecond["unit-second-" + attackTargetId];
+            attacker = gameRoom.unitOrderFirst["unit-first-" + attackerId];
+            attackTarget = gameRoom.unitOrderSecond["unit-second-" + attackTargetId];
         }
 
         let damage = attacker.amountInStack * attacker.maxDamage * (attacker.attack / attackTarget.defence);
@@ -156,12 +159,12 @@ const _helper = {
 
         let isDied = false;
         if (type === this.SECOND_PLAYER_TYPE) {
-            unitOrderFirst["unit-first-" + String(attackTargetId)].amountInStack -= killUnits;
-            if (unitOrderFirst["unit-first-" + attackTargetId].amountInStack <= 0) {
-                unitOrderFirst["unit-first-" + attackTargetId].isDied = true;
+            gameRoom.unitOrderFirst["unit-first-" + String(attackTargetId)].amountInStack -= killUnits;
+            if (gameRoom.unitOrderFirst["unit-first-" + attackTargetId].amountInStack <= 0) {
+                gameRoom.unitOrderFirst["unit-first-" + attackTargetId].isDied = true;
                 isDied = true;
 
-                if (this.isAllUnitsDied(unitOrderFirst)) {
+                if (this.isAllUnitsDied(gameRoom.unitOrderFirst)) {
                     const allDiedMsg = `{
                         "message":"all died", 
                         "allDie": ${allDied},
@@ -169,16 +172,16 @@ const _helper = {
                     }`;
                     this.sendSocketMessageToPlayers(gameRoom, allDiedMsg)
 
-                    return { unitOrderFirst, unitOrderSecond }
+                    return gameRoom
                 }
             }
         } else if (type === this.FIRST_PLAYER_TYPE) {
-            unitOrderSecond["unit-second-" + String(attackTargetId)].amountInStack -= killUnits;
-            if (unitOrderSecond["unit-second-" + attackTargetId].amountInStack <= 0) {
-                unitOrderSecond["unit-second-" + attackTargetId].isDied = true;
+            gameRoom.unitOrderSecond["unit-second-" + String(attackTargetId)].amountInStack -= killUnits;
+            if (gameRoom.unitOrderSecond["unit-second-" + attackTargetId].amountInStack <= 0) {
+                gameRoom.unitOrderSecond["unit-second-" + attackTargetId].isDied = true;
                 isDied = true;
 
-                if (this.isAllUnitsDied(unitOrderSecond)) {
+                if (this.isAllUnitsDied(gameRoom.unitOrderSecond)) {
                     const allDiedMsg = `{
                         "message":"all died", 
                         "allDie": ${allDied},
@@ -186,7 +189,7 @@ const _helper = {
                     }`;
                     this.sendSocketMessageToPlayers(gameRoom, allDiedMsg)
 
-                    return { unitOrderFirst, unitOrderSecond }
+                    return gameRoom.unitOrderSecond
                 }
             }
         }
@@ -200,7 +203,7 @@ const _helper = {
         }`;
         this.sendSocketMessageToPlayers(gameRoom, attackEvent)
 
-        return { unitOrderFirst, unitOrderSecond }
+        return gameRoom
     },
 
     isAllUnitsDied(unitsOrder) {

@@ -9,7 +9,7 @@ const { defaultUnitMapFirstPlayer, defaultUnitMapSecondPlayer } = require('./Uni
 let unitOrderFirst = defaultUnitMapFirstPlayer,
   unitOrderSecond = defaultUnitMapSecondPlayer
 
-let gameRooms = [new GameRoom(1, null, null, "")];
+let gameRooms = [new GameRoom(1, null, null, "", unitOrderFirst, unitOrderSecond)];
 let clients = [];
 let numberOfClients = 1;
 
@@ -23,14 +23,7 @@ webSocketServer.on('connection', function (ws) {
 
   clients.push(client);
 
-  let data = _helper.putPlayerInGameRoom(
-    gameRooms,
-    client,
-    unitOrderFirst,
-    unitOrderSecond
-  );
-
-  gameRooms = data.gameRooms
+  gameRooms = _helper.putPlayerInGameRoom(gameRooms, client);
 
   ws.on('message', function (message) {
     let msgData = JSON.parse(message)
@@ -59,17 +52,13 @@ webSocketServer.on('connection', function (ws) {
             attackerId = msgData.attacker,
             attackTargetId = msgData.attackTarget;
 
-          let units = _helper.processAttackEvent(
+          let gameRoom = _helper.processAttackEvent(
             type,
             attackerId,
             attackTargetId,
             gameRooms[i],
-            unitOrderFirst,
-            unitOrderSecond
           );
-
-          unitOrderFirst = units.unitOrderFirst
-          unitOrderSecond = units.unitOrderSecond
+          gameRooms[i] = gameRoom
         }
       }
     }
