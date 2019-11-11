@@ -13,7 +13,7 @@ _helper.initUnitsPositionOnScreen()
 
 socket.onmessage = function (event) {
     const incomingMessage = event.data;
-    console.log(incomingMessage);
+    console.log(incomingMessage)
     let jsonData = JSON.parse(incomingMessage);
 
     if (jsonData["roomID"] !== undefined) {
@@ -45,8 +45,11 @@ socket.onmessage = function (event) {
     }
 
     if (jsonData["allDie"] !== undefined) {
-        console.log(type + " win game");
-        socket.close();
+        let winSTatusMessage = type + " win game";
+        setTimeout(() => {
+            _helper.endGame(winSTatusMessage);
+            socket.close();
+        }, 2200)
     }
 };
 

@@ -1,3 +1,6 @@
+const { Client } = require("./classes/Client.class");
+const { GameRoom } = require("./classes/GameRoom.class");
+
 const _helper = {
     FIRST_PLAYER_TURN: "firstPlayer",
     SECOND_PLAYER_TURN: "secondPlayer",
@@ -11,30 +14,33 @@ const _helper = {
     END_TURN_MESSAGE: "End Turn",
     ATTACK_MONSTER_MESSAGE: "attackMonster",
 
-    putPlayerInGameRoom(gameRooms, client, newGameRoomId, unitOrderFirst, unitOrderSecond) {
-        let allRoomsBusy = true;
+    putPlayerInGameRoom(gameRooms, player, unitOrderFirst, unitOrderSecond) {
+        let allGameRoomsBusy = true;
 
         for (let i = 0; i < gameRooms.length; i++) {
-            if (gameRooms[i].firstClient === null && gameRooms[i].secondClient === null) {
-                gameRooms[i].firstClient = client;
-                allRoomsBusy = false;
+            const gameRoom = gameRooms[i];
+
+            if (gameRoom.firstClient === null && gameRoom.secondClient === null) {
+                gameRoom.firstClient = player;
+                allGameRoomsBusy = false;
                 break;
             }
-            else if (gameRooms[i].firstClient === null && gameRooms[i].secondClient !== null) {
-                gameRooms[i].firstClient = client;
-                allRoomsBusy = false;
-                return this.startGame(gameRooms[i], unitOrderFirst, unitOrderSecond, gameRooms);
+            else if (gameRoom.firstClient === null && gameRoom.secondClient !== null) {
+                gameRoom.firstClient = player;
+                allGameRoomsBusy = false;
+                return this.startGame(gameRoom, unitOrderFirst, unitOrderSecond, gameRooms);
             }
-            else if (gameRooms[i].firstClient !== null && gameRooms[i].secondClient === null) {
-                gameRooms[i].secondClient = client;
-                allRoomsBusy = false;
-                return this.startGame(gameRooms[i], unitOrderFirst, unitOrderSecond, gameRooms);
+            else if (gameRoom.firstClient !== null && gameRoom.secondClient === null) {
+                gameRoom.secondClient = player;
+                allGameRoomsBusy = false;
+                return this.startGame(gameRoom, unitOrderFirst, unitOrderSecond, gameRooms);
             }
         }
 
-        if (allRoomsBusy) {
+        if (allGameRoomsBusy) {
+            let newGameRoomId = gameRooms.length + 1
             gameRooms.push(new GameRoom(newGameRoomId, null, null, ""));
-            gameRooms[gameRooms.length - 1].firstClient = client;
+            gameRooms[gameRooms.length - 1].firstClient = player;
         }
 
         return { unitOrderFirst, unitOrderSecond, gameRooms };
@@ -85,7 +91,7 @@ const _helper = {
                     maxInitiative = unitOrderFirst[key].initiative;
                     unitKey = key
                 }
-            } 
+            }
             if (maxInitiative === 0) {
                 for (const key in unitOrderFirst) unitOrderFirst[key].was = false;
                 for (const key in unitOrderFirst) {
@@ -154,8 +160,10 @@ const _helper = {
                     if (!unitOrderFirst[key].isDied) allDied = false;
                 }
                 if (allDied) {
-                    gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":${type}}`)
-                    return;
+                    gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
+                    gameRoom.secondClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
+
+                    return { unitOrderFirst, unitOrderSecond }
                 }
             }
         } else if (type === "first") {
@@ -168,8 +176,10 @@ const _helper = {
                     if (!unitOrderSecond[key].isDied) allDied = false;
                 }
                 if (allDied) {
-                    gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":${type}}`)
-                    return;
+                    gameRoom.firstClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
+                    gameRoom.secondClient.ctx.send(`{"allDie": ${allDied},"typeThatDie":"${type}"}`);
+
+                    return { unitOrderFirst, unitOrderSecond }
                 }
             }
         }

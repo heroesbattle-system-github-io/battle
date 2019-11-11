@@ -19,16 +19,13 @@ const webSocketServer = new WebSocket.Server({
 
 webSocketServer.on('connection', function (ws) {
   let clientID = numberOfClients++,
-    client = new Client(ws, clientID),
-    numberOfGameRooms = gameRooms.length,
-    newGameRoomId = numberOfGameRooms + 1;
+    client = new Client(ws, clientID)
 
   clients.push(client);
 
   let data = _helper.putPlayerInGameRoom(
     gameRooms,
     client,
-    newGameRoomId,
     unitOrderFirst,
     unitOrderSecond
   );

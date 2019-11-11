@@ -62,6 +62,13 @@ const _helper = {
         overBack.classList.add("fadeOut")
     },
 
+    endGame(msg) {
+        let winInfo = document.querySelector(".win-status");
+        winInfo.textContent = msg;
+        let overBack = document.querySelector(".win-overflow-company");
+        overBack.classList.add("fadeIn");
+    },
+
     initUnitPositionOnScreen(image, elementPositionedBy, healthBar) {
         let offset = elementPositionedBy.getBoundingClientRect();
         let centerX = offset.top + offset.width / 2;
@@ -71,7 +78,7 @@ const _helper = {
         image.style.top = centerX - 80 + 'px';
 
         healthBar.style.left = centerY - 25 + 'px';
-        healthBar.style.top = image.offsetTop + image.offsetHeight - 14+ 'px';
+        healthBar.style.top = image.offsetTop + image.offsetHeight - 14 + 'px';
     },
 
     initUnitsPositionOnScreen() {
