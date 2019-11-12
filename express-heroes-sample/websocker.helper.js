@@ -129,7 +129,7 @@ const _helper = {
 
         return gameRoom
     },
-     
+       
     findMaxInitiativeUnit(unitsOrder) {
         let maxInitiative = 0, unitKey;
         for (const key in unitsOrder) {

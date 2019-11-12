@@ -79,6 +79,7 @@ const _helper = {
 
     clickUnitHandler(ev) {
         if (yourTurn === false) return;
+        ev.target.removeEventListener("click", _helper.clickUnitHandler);
         _helper.requestToAttack(ev.target)
     },
 
@@ -170,7 +171,7 @@ const _helper = {
 
         health -= damageGiven;
 
-        healthBar.classList.add("fadeOut");
+        // healthBar.classList.add("fadeOut");
         healthBar.textContent = health;
     },
 
@@ -190,8 +191,8 @@ const _helper = {
         setTimeout(function () {
             clearInterval(animation);
 
-            if (Number(healthBar.textContent) > 0)
-                healthBar.classList.remove("fadeOut")
+            // if (Number(healthBar.textContent) > 0)
+            //     healthBar.classList.remove("fadeOut")
         }, 2200);
     },
 
