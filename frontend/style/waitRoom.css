@@ -22,7 +22,8 @@ text {
     z-index: 99999;
     visibility: visible;
     opacity: 1;
-    background: black;
+    background-image: url("../assets/fog.png");
+    background-repeat: repeat;
     transition: all .5s linear;
 }
 
@@ -36,8 +37,11 @@ text {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: whitesmoke;
-    border: 1px solid gray;
+    background-image: url("../assets/menu-bar.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 420px;
+    height: 182px;
     padding: 40px 20px;
 }
 
