@@ -83,6 +83,20 @@ text {
     visibility: visible;
 }
 
+.turnTimer {
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+}
+
+.turnTimer .timer-date {
+    font-family: sans-serif;
+    font-size: 40px;
+    color: black;
+}
+
 .grid-container {
     position: relative;
     min-height: 100vh !important;

@@ -15,7 +15,15 @@ const _helper = {
 
     CUSTOM_CURSOR: `url("../assets/attack.cur"), default`,
 
-    _self: this,
+    SOCKET_LOADING_TIME_MS: 100,
+    ONE_SECOND_MS: 1000,
+    ONE_MINUTE_AND_ONE_SECOND_MS: 61000,
+    SECONDS_ON_TURN: 59,
+    TEN_SECONDS: 10,
+
+    ONE_MINUTE: "01:00",
+    LESS_THEN_TEN_SECONDS: "00:0",
+    MORE_THEN_TEN_SECONDS: "00:",
 
     initialUnitsPositionsOnScreen: [
         document.querySelector('g[transform="translate(-450,-952)"]'),
@@ -257,4 +265,35 @@ const _helper = {
         let overBack = document.querySelector(".win-overflow");
         overBack.classList.add("fadeIn");
     },
+
+    setTimeInterval() {
+        let iterator = this.SECONDS_ON_TURN;
+        let timer = document.querySelector(".timer-date");
+        timer.textContent = this.ONE_MINUTE;
+
+        return setInterval(() => {
+            let timeSting = "";
+            if (iterator < this.TEN_SECONDS)
+                timeSting = this.LESS_THEN_TEN_SECONDS + iterator;
+            else
+                timeSting = this.MORE_THEN_TEN_SECONDS + iterator;
+
+            timer.textContent = timeSting;
+            iterator--
+        }, this.ONE_SECOND_MS)
+    },
+
+    setSkipTurnTimeout() {
+        return setTimeout(() => {
+            let activeUnit = document.querySelector(".active-unit");
+            activeUnit.classList.remove("active-unit");
+
+            clearInterval(timerInterval);
+            if (yourTurn === true) {
+                setTimeout(() => {
+                    _helper.timeOutEndTurn(type)
+                }, _helper.SOCKET_LOADING_TIME_MS)
+            }
+        }, this.ONE_MINUTE_AND_ONE_SECOND_MS);
+    }
 }

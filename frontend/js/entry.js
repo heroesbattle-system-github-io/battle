@@ -9,7 +9,8 @@ let gameID = undefined,
     isDiedUnit = false,
     type = "",
     turnTimeout = null,
-    activeUnitInfo = "";
+    activeUnitInfo = "",
+    timerInterval = null;
 
 _helper.initUnitsPositionOnScreen()
 
@@ -28,17 +29,9 @@ socket.onmessage = function (event) {
 
     if (jsonData["message"] === _helper.MSG_TURN_STATUS) {
         yourTurn = jsonData["yourTurn"];
-        setTimeout(() => {
-            let activeUnit = document.querySelector(".active-unit");
-            activeUnit.classList.remove("active-unit");
-            bufferAmountChecker = null
-            console.log(socket.bufferedAmount)
-            if (yourTurn === true) {
-                setTimeout(() => {
-                    _helper.timeOutEndTurn(type)
-                }, 100)
-            }
-        }, 100)
+
+        turnTimeout = _helper.setSkipTurnTimeout();
+        timerInterval = _helper.setTimeInterval();
 
         attackTarget = _helper.setUnitsEventListener(socket, type);
         _helper.setCustomCursorToAttackTarget(type)
@@ -51,6 +44,8 @@ socket.onmessage = function (event) {
 
     if (jsonData["message"] === _helper.MSG_ATTACK_EVENT) {
         clearTimeout(turnTimeout);
+        clearInterval(timerInterval);
+
         damageGiven = jsonData["damage"];
 
         attacker = jsonData["attacker"];
