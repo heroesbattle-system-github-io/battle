@@ -134,6 +134,9 @@ const _helper = {
     },
 
     attackAnimation(attacker, attackTarget, type) {
+        let battleAnimationOverflow = document.querySelector(".attack-animition-overflow");
+        battleAnimationOverflow.classList.add("fadeIn");
+
         let attackTargetUnit;
 
         if (type === this.FIRST_PLAYER && yourTurn === true) {
@@ -161,7 +164,8 @@ const _helper = {
             images.classList.remove("active-unit")
 
             setTimeout(() => {
-                if (type === attackerType) this.endTurn();
+                if (type === attackerType) this.endTurn(battleAnimationOverflow);
+                battleAnimationOverflow.classList.remove("fadeIn");
             }, 200);
         }, 2250)
     },
@@ -171,7 +175,7 @@ const _helper = {
 
         health -= damageGiven;
 
-        // healthBar.classList.add("fadeOut");
+        healthBar.classList.add("fadeOut");
         healthBar.textContent = health;
     },
 
@@ -191,8 +195,8 @@ const _helper = {
         setTimeout(function () {
             clearInterval(animation);
 
-            // if (Number(healthBar.textContent) > 0)
-            //     healthBar.classList.remove("fadeOut")
+            if (Number(healthBar.textContent) > 0)
+                healthBar.classList.remove("fadeOut")
         }, 2200);
     },
 
