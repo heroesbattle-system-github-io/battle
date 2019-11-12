@@ -214,6 +214,20 @@ const _helper = {
         socket.send(`{"gameID": ${gameID}, "message":"End Turn"}`)
     },
 
+    timeOutEndTurn(type) {
+        if (type === this.FIRST_PLAYER)
+            images = document.querySelectorAll(".unit-second");
+        else if (type === this.SECOND_PLAYER)
+            images = document.querySelectorAll(".unit-first");
+
+        images.forEach(image => {
+            image.style.cursor = "default";
+            image.removeEventListener("click", this.clickUnitHandler);
+        });
+
+        socket.send(`{"gameID": ${gameID}, "message":"End Turn"}`);
+    },
+
     initUnitPositionOnScreen(image, elementPositionedBy, healthBar) {
         let offset = elementPositionedBy.getBoundingClientRect();
         let centerX = offset.top + offset.width / 2;
