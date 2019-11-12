@@ -99,9 +99,16 @@ text {
     border: 1px solid white;
     height: 20px;
     width: 50px;
+    opacity: 1;
+    visibility: visible;
     text-align: center;
     pointer-events: none;
     z-index: 99998;
+}
+
+.health-bar.fadeOut {
+    opacity: 0;
+    visibility: hidden;
 }
 
 .unit-image {

@@ -151,7 +151,7 @@ const _helper = {
         attackTargetUnit.classList.add("attacked");
 
         this.setHealthAfterGetDamage(damageGiven, healthBar);
-        this.executeAttackAnimation();
+        this.executeAttackAnimation(healthBar);
 
         setTimeout(() => {
             attackTargetUnit.classList.remove("attacked");
@@ -165,15 +165,16 @@ const _helper = {
         }, 2250)
     },
 
-    setHealthAfterGetDamage(damageGiven, attackTarget) {
-        let health = Number(attackTarget.textContent);
+    setHealthAfterGetDamage(damageGiven, healthBar) {
+        let health = Number(healthBar.textContent);
 
         health -= damageGiven;
 
-        attackTarget.textContent = health;
+        healthBar.classList.add("fadeOut");
+        healthBar.textContent = health;
     },
 
-    executeAttackAnimation() {
+    executeAttackAnimation(healthBar) {
         let activeUnit = document.querySelector(".active-unit");
         let iterator = 0;
 
@@ -186,7 +187,12 @@ const _helper = {
             iterator++
         }, 100);
 
-        setTimeout(function () { clearInterval(animation); }, 2200);
+        setTimeout(function () {
+            clearInterval(animation);
+
+            if (Number(healthBar.textContent) > 0)
+                healthBar.classList.remove("fadeOut")
+        }, 2200);
     },
 
     endTurn() {
@@ -228,7 +234,7 @@ const _helper = {
     endGame(msg) {
         let winInfo = document.querySelector(".win-overflow__status");
         winInfo.textContent = msg;
-        
+
         let overBack = document.querySelector(".win-overflow");
         overBack.classList.add("fadeIn");
     },
