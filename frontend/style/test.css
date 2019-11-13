@@ -1,0 +1,15 @@
+.unit-first-5 {
+    background-image: url("../assets/units/hell-beast/Hell-Beast-Files/PNG/with-stroke/hell-beast-idle.png");
+    background-position: 0px 110px;
+    background-size: 600px Auto;
+    height: 110px;
+    width: 100px;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .5s linear, visibility .5s linear;
+}
+
+.unit-first-5.hide {
+    visibility: hidden;
+    opacity: 0;
+}
