@@ -8,6 +8,13 @@ polygon {
     fill: rgba(0, 0, 0, 0.7) !important
 }
 
+svg {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-45%, -50%)
+}
+
 text {
     font-size: 93px;
     color: red;
@@ -16,6 +23,7 @@ text {
 }
 
 .wait-overflow {
+    display: none;
     position: absolute;
     height: 100vh;
     width: 100vw;
@@ -138,9 +146,19 @@ text {
 .grid-container {
     position: relative;
     min-height: 100vh !important;
+}
+
+.grid-container::before {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
     background-image: url('../assets/locations/bg.jpg');
-    background-position-y: 100%;
+    background-size: cover;
     background-repeat: no-repeat;
+    height: 100vh !important;
 }
 
 .grid-container .diagram-wrapper {
@@ -148,6 +166,8 @@ text {
     height: 100%;
     width: 100%;
     bottom: 0;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .grid-container .diagram-wrapper #diagram-movement-range {
@@ -196,8 +216,53 @@ text {
 }
 
 #image {
-    background-image: url('../assets/2D_Archer_Spritesheets_1024x1024/Shoot_Stand/shoot_stand_000.png');
-    background-size: contain;
+    background-image: url('../assets/Ghost-Files/GIFS/ghost-shriek.gif');
+    background-size: 450px auto;
+    background-position: -181px -153px;
+    background-repeat: no-repeat;
+}
+
+.unit-second-5 {
+    background-image: url('../assets/Ghost-Files/GIFS/ghost-vanish.gif') !important;
+    background-size: 450px auto;
+    background-position: -181px -153px;
+    background-repeat: no-repeat;
+}
+
+.unit-second-2 {
+    background-image: url('../assets/Ghost-Files/GIFS/ghost-idle.gif') !important;
+    background-size: 450px auto;
+    background-position: -181px -153px;
+    background-repeat: no-repeat;
+}
+
+.unit-second-3 {
+    background-image: url('../assets/Fire-Skull-Files/GIF/fire-skull.gif') !important;
+    background-size: 100px auto !important;
+    background-position: -5px -15px !important;
+    background-repeat: no-repeat;
+}
+
+.unit-first-1 {
+    background-image: url("../assets/demon-Files/GIFS/demon-attack.gif") !important;
+    background-size: 400px auto !important;
+    background-position: -81px -40px !important;
+    background-repeat: no-repeat;
+    top: 30px !important;
+    height: 237px;
+    width: 247px;
+    transform: scaleX(-1);
+}
+
+.unit-second-1 {
+    background-image: url("../assets/demon-Files/GIFS/demon-idle.gif") !important;
+    background-size: 400px auto !important;
+    background-position: -81px -40px !important;
+    background-repeat: no-repeat;
+    top: 30px !important;
+    height: 237px;
+    width: 247px;
+    transform: none;
 }
 
 #image.on-hover-image {
@@ -211,3 +276,13 @@ text {
 #image.attacked {
     border: 2px solid blueviolet;
 }
+
+/* .boss-1 {
+    position: absolute;
+    height: 200px;
+    width: 300px;
+    background: url("../assets/pipo-boss004.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 99999;
+} */
