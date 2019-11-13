@@ -225,14 +225,14 @@ const _helper = {
             if (gameRooms[i][this.FIRST_CLIENT] !== null &&
                 gameRooms[i][this.FIRST_CLIENT].id === clientID) {
 
-                if (!exitFlag && gameRooms[i][this.FIRST_CLIENT] !== null)
+                if (!exitFlag && gameRooms[i][this.SECOND_CLIENT] !== null)
                     gameRooms[i].secondClient.ctx.send(playerLeftGame)
                 gameRooms[i][this.FIRST_CLIENT] = null;
             }
             else if (gameRooms[i][this.SECOND_CLIENT] !== null &&
                 gameRooms[i][this.SECOND_CLIENT].id === clientID) {
 
-                if (!exitFlag && gameRooms[i][this.SECOND_CLIENT] !== null)
+                if (!exitFlag && gameRooms[i][this.FIRST_CLIENT] !== null)
                     gameRooms[i].firstClient.ctx.send(playerLeftGame)
                 gameRooms[i][this.SECOND_CLIENT] = null;
             }
