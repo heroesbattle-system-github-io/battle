@@ -37,12 +37,46 @@ text {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-image: url("../assets/menu-bar.png");
-    background-size: contain;
-    background-repeat: no-repeat;
+    background-image: url("../assets/panelbg.jpg");
+    background-repeat: repeat;
     width: 420px;
     height: 182px;
+    text-align: center;
     padding: 40px 20px;
+    z-index: 9999;
+}
+
+.wait-overflow .background-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 420px;
+    transform: translate(-50%, -50%);
+    height: 194px;
+    padding: 40px 20px;
+    background-image: url("../assets/Background.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: inherit;
+}
+
+.wait-overflow .background-wrapper .btn {
+    padding: 10px;
+    background-image: url("../assets/panelbg.jpg");
+    border-top: 2px solid rgba(221, 221, 221, .7);
+    border-left: 2px solid rgba(221, 221, 221, .7);
+    border-bottom: 3px solid rgba(0, 0, 0, .6);
+    border-right: 3px solid rgba(0, 0, 0, .6);
+    outline: 1px solid rgba(255, 255, 126, 0.6);
+    background-position: 10px 20px;
+    color: rgb(221, 221, 221);
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.wait-overflow .wait-overflow__status-bar .wait-overflow__status {
+    color: rgb(206, 206, 206);
+    margin: 30px 10px 50px 10px;
 }
 
 .win-overflow {
