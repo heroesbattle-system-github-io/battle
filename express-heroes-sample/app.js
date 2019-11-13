@@ -13,7 +13,7 @@ let gameRooms = [
   new GameRoom(1,
     null,
     null,
-    "",  
+    "",
     JSON.parse(JSON.stringify(unitOrderFirst)),
     JSON.parse(JSON.stringify(unitOrderSecond)))
 ];
@@ -72,8 +72,18 @@ webSocketServer.on('connection', function (ws) {
     }
   });
 
-  ws.on('close', function () {
-    clients = _helper.removeClientOnCloseEv(clients, clientID)
-    gameRooms = _helper.removeClientFromGameRoom(gameRooms, clientID)
+  ws.on('close', function (event) {
+    let eventCode = event;
+
+    if (eventCode === _helper.BROWSER_LEAVES_PAGE) {
+      let rightExit = false
+      gameRooms = _helper.removeClientFromGameRoom(gameRooms, clientID, rightExit)
+      clients = _helper.removeClientOnCloseEv(clients, clientID)
+    }
+    else if (eventCode === _helper.NORMAL_SOCKET_CLOSE) {
+      let rightExit = true
+      gameRooms = _helper.removeClientFromGameRoom(gameRooms, clientID, rightExit)
+      clients = _helper.removeClientOnCloseEv(clients, clientID)
+    }
   });
 });

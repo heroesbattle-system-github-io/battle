@@ -5,6 +5,9 @@ const _helper = {
     FIRST_PLAYER_TURN: "firstPlayer",
     SECOND_PLAYER_TURN: "secondPlayer",
 
+    FIRST_CLIENT: "firstClient",
+    SECOND_CLIENT: "secondClient",
+
     FIRST_PLAYER_TYPE: "first",
     SECOND_PLAYER_TYPE: "second",
 
@@ -16,6 +19,9 @@ const _helper = {
 
     END_TURN_MESSAGE: "End Turn",
     ATTACK_MONSTER_MESSAGE: "attackMonster",
+
+    BROWSER_LEAVES_PAGE: 1001,
+    NORMAL_SOCKET_CLOSE: 1005,
 
     sendSocketMessageToPlayers(gameRoom, msg) {
         gameRoom.firstClient.ctx.send(msg);
@@ -129,7 +135,7 @@ const _helper = {
 
         return gameRoom
     },
-       
+
     findMaxInitiativeUnit(unitsOrder) {
         let maxInitiative = 0, unitKey;
         for (const key in unitsOrder) {
@@ -187,7 +193,7 @@ const _helper = {
             "typeAttacker":"${type}",
             "isDied":${isDied},
             "allDied":${allDied}
-        }`;  
+        }`;
         this.sendSocketMessageToPlayers(gameRoom, attackEvent)
 
         return gameRoom
@@ -211,18 +217,22 @@ const _helper = {
         return clients
     },
 
-    removeClientFromGameRoom(gameRooms, clientID) {
+    removeClientFromGameRoom(gameRooms, clientID, exitFlag) {
+        const playerLeftGame = `{"message":"left game"}`;
+
         for (let i = 0; i < gameRooms.length; i++) {
 
-            if (gameRooms[i]["firstClient"] !== null &&
-                gameRooms[i]["firstClient"].id === clientID) {
+            if (gameRooms[i][this.FIRST_CLIENT] !== null &&
+                gameRooms[i][this.FIRST_CLIENT].id === clientID) {
 
-                gameRooms[i]["firstClient"] = null;
+                if (!exitFlag) gameRooms[i].secondClient.ctx.send(playerLeftGame)
+                gameRooms[i][this.FIRST_CLIENT] = null;
             }
-            else if (gameRooms[i]["secondClient"] !== null &&
-                gameRooms[i]["secondClient"].id === clientID) {
+            else if (gameRooms[i][this.SECOND_CLIENT] !== null &&
+                gameRooms[i][this.SECOND_CLIENT].id === clientID) {
 
-                gameRooms[i]["secondClient"] = null;
+                if (!exitFlag) gameRooms[i].firstClient.ctx.send(playerLeftGame)
+                gameRooms[i][this.SECOND_CLIENT] = null;
             }
         }
 

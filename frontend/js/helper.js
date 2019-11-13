@@ -5,6 +5,7 @@ const _helper = {
     MSG_SET_ACTIVE_UNIT: "set active unit",
     MSG_ATTACK_EVENT: "attack event",
     MSG_ALL_DIED: "all died",
+    MSG_PLAYER_LEFT_GAME: "left game",
 
     FIRST_PLAYER: "first",
     SECOND_PLAYER: "second",

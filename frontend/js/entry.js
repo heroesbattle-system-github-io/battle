@@ -17,6 +17,7 @@ _helper.initUnitsPositionOnScreen()
 socket.onmessage = function (event) {
     const incomingMessage = event.data;
     let jsonData = JSON.parse(incomingMessage);
+    console.log(jsonData["message"]);
 
     if (jsonData["message"] === _helper.MSG_START_GAME) {
         gameID = jsonData["roomID"];
@@ -64,5 +65,15 @@ socket.onmessage = function (event) {
                 socket.close();
             }, 2300)
         }
+    }
+
+    if (jsonData["message"] === _helper.MSG_PLAYER_LEFT_GAME) {
+        let winStatusMessage = "Second player surrendered";
+
+        clearTimeout(turnTimeout);
+        clearInterval(timerInterval);
+
+        _helper.endGame(winStatusMessage);
+        socket.close();
     }
 };
