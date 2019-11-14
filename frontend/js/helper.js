@@ -68,6 +68,12 @@ const _helper = {
         document.querySelector(".health-unit-second-5")
     ],
 
+    setStartActiveGrid() {
+        this.initialUnitsPositionsOnScreen.forEach(grid => {
+            grid.firstElementChild.classList.add("active")
+        });
+    },
+
     startGame() {
         const waitOverflowBackground = document.querySelector(".wait-overflow");
         waitOverflowBackground.classList.add("fadeOut")
@@ -257,6 +263,7 @@ const _helper = {
                 this.unitHealthBarNames[i]
             )
         }
+        this.setStartActiveGrid();
     },
 
     endGame(msg) {

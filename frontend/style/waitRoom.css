@@ -15,6 +15,14 @@ svg {
     transform: translate(-45%, -50%)
 }
 
+g {
+    stroke: #89ff79;
+}
+
+.active polygon {
+    fill: transparent !important;
+}
+
 text {
     font-size: 93px;
     color: red;
