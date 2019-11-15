@@ -17,7 +17,6 @@ _helper.initUnitsPositionOnScreen()
 socket.onmessage = function (event) {
     const incomingMessage = event.data;
     let jsonData = JSON.parse(incomingMessage);
-    console.log(jsonData["message"]);
 
     if (jsonData["message"] === _helper.MSG_START_GAME) {
         gameID = jsonData["roomID"];

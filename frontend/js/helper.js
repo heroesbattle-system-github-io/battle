@@ -18,7 +18,7 @@ const _helper = {
 
     SOCKET_LOADING_TIME_MS: 100,
     ONE_SECOND_MS: 1000,
-    ONE_MINUTE_AND_ONE_SECOND_MS: 61000,
+    ONE_MINUTE_AND_ONE_SECOND_MS: 2000,
     SECONDS_ON_TURN: 59,
     TEN_SECONDS: 10,
 
@@ -33,6 +33,22 @@ const _helper = {
         document.querySelector('g[transform="translate(-900, -173)"]'),
         document.querySelector('g[transform="translate(-1050, 86)"]'),
 
+        document.querySelector('g[transform="translate(1350, 88)"]'),
+        document.querySelector('g[transform="translate(1200, 347)"]'),
+        document.querySelector('g[transform="translate(1050, 606)"]'),
+        document.querySelector('g[transform="translate(900, 865)"]'),
+        document.querySelector('g[transform="translate(750, 1125)"]')
+    ],
+
+    firstUnitsPosition: [
+        document.querySelector('g[transform="translate(-450,-952)"]'),
+        document.querySelector('g[transform="translate(-600,-693)"]'),
+        document.querySelector('g[transform="translate(-750,-433)"]'),
+        document.querySelector('g[transform="translate(-900, -173)"]'),
+        document.querySelector('g[transform="translate(-1050, 86)"]'),
+    ],
+
+    secondUnitsPosition: [
         document.querySelector('g[transform="translate(1350, 88)"]'),
         document.querySelector('g[transform="translate(1200, 347)"]'),
         document.querySelector('g[transform="translate(1050, 606)"]'),
@@ -136,6 +152,8 @@ const _helper = {
     setActiveUnit(activeUnit, yourTurn) {
         let activeUnitImg;
 
+        this.findNeighboors(type, activeUnit, yourTurn)
+
         if (type === this.FIRST_PLAYER && yourTurn === true)
             activeUnitImg = document.querySelector(`.unit-first-${activeUnit}`);
         else if (type === this.FIRST_PLAYER && yourTurn !== true)
@@ -226,6 +244,12 @@ const _helper = {
             image.removeEventListener("click", this.clickUnitHandler);
         });
 
+        let activeGrid = document.querySelectorAll(".available");
+
+        activeGrid.forEach(hex => {
+            hex.classList.remove("available")
+        });
+
         socket.send(`{"gameID": ${gameID}, "message":"End Turn"}`)
     },
 
@@ -238,6 +262,12 @@ const _helper = {
         images.forEach(image => {
             image.style.cursor = "default";
             image.removeEventListener("click", this.clickUnitHandler);
+        });
+
+        let activeGrid = document.querySelectorAll(".available");
+
+        activeGrid.forEach(hex => {
+            hex.classList.remove("available")
         });
 
         socket.send(`{"gameID": ${gameID}, "message":"End Turn"}`);
@@ -303,5 +333,52 @@ const _helper = {
                 }, _helper.SOCKET_LOADING_TIME_MS)
             }
         }, this.ONE_MINUTE_AND_ONE_SECOND_MS);
+    },
+
+    findNeighboors(type, unitGrid, yourTurn) {
+        let X = 10, Y = 3, gridElem = null;
+
+        if (yourTurn === true) {
+            if (type === this.FIRST_PLAYER) {
+                gridElem = this.firstUnitsPosition[Number(unitGrid) - 1];
+                X = gridElem.firstElementChild.nextElementSibling.textContent;
+                Y = gridElem.firstElementChild.nextElementSibling.nextElementSibling.textContent
+            } else {
+                gridElem = this.secondUnitsPosition[Number(unitGrid) - 1]
+                X = gridElem.firstElementChild.nextElementSibling.textContent;
+                Y = gridElem.firstElementChild.nextElementSibling.nextElementSibling.textContent
+            }
+        } else {
+            return;
+        }
+
+        let grid = document.querySelectorAll(".grid-hex")
+        let element;
+
+        grid.forEach(elem => {
+            let firstContent = elem.nextElementSibling.textContent;
+            let secondCotent = elem.nextElementSibling.nextElementSibling.textContent;
+            if (firstContent == X && secondCotent == Y) element = elem;
+        });
+
+        let originX = element.getBoundingClientRect().x;
+        let originY = element.getBoundingClientRect().y;
+
+        let distArr = [];
+        grid.forEach(elem => {
+            let elemParameters = elem.getBoundingClientRect();
+            let parametersX = elemParameters.x
+            let parametersY = elemParameters.y
+
+            let dist = Math.sqrt((parametersX - originX) * (parametersX - originX) +
+                (parametersY - originY) * (parametersY - originY));
+
+            distArr.push({ "dist": dist, "elem": elem })
+        });
+
+        distArr.sort((a, b) => a.dist - b.dist);
+        for (let i = 1; i < 80; i++) {
+            distArr[i].elem.classList.add("available")
+        }
     }
 }

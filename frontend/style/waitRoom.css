@@ -19,6 +19,14 @@ g {
     stroke: #89ff79;
 }
 
+.available polygon {
+    fill: black !important;
+}
+
+.available polygon:hover {
+    fill: greenyellow !important
+}
+
 .active polygon {
     fill: transparent !important;
 }
@@ -31,7 +39,6 @@ text {
 }
 
 .wait-overflow {
-    display: none;
     position: absolute;
     height: 100vh;
     width: 100vw;
@@ -214,7 +221,7 @@ text {
     z-index: 99998;
 }
 
-.unit-second {
+.unit-first {
     -webkit-transform: scaleX(-1);
     -moz-transform: scaleX(-1);
     -o-transform: scaleX(-1);
@@ -224,13 +231,15 @@ text {
 }
 
 #image {
-    background-image: url('../assets/Ghost-Files/GIFS/ghost-shriek.gif');
+    background-image: url('../assets/Ghost-Files/GIFS/ghost-idle.gif');
     background-size: 450px auto;
     background-position: -181px -153px;
     background-repeat: no-repeat;
+    pointer-events: none;
+    user-select: none;
 }
 
-.unit-second-5 {
+/* .unit-second-5 {
     background-image: url('../assets/Ghost-Files/GIFS/ghost-vanish.gif') !important;
     background-size: 450px auto;
     background-position: -181px -153px;
@@ -260,9 +269,9 @@ text {
     height: 237px;
     width: 247px;
     transform: scaleX(-1);
-}
+} */
 
-.unit-second-1 {
+/* .unit-second-1 {
     background-image: url("../assets/demon-Files/GIFS/demon-idle.gif") !important;
     background-size: 400px auto !important;
     background-position: -81px -40px !important;
@@ -271,7 +280,7 @@ text {
     height: 237px;
     width: 247px;
     transform: none;
-}
+} */
 
 #image.on-hover-image {
     border: 2px solid red;
