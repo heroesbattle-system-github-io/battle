@@ -172,7 +172,23 @@ class Layout {
         }
     
         return inside;
-    };
+    }
+
+    getHexRange(activeHex, hexes, range) {
+        let results = [];
+
+        for (let i = 0; i < hexes.length; i++) {
+            let hex = hexes[i]
+
+            if ((hex.q >= (activeHex.q - range) && hex.q <= (activeHex.q + range)) &&
+                (hex.r >= (activeHex.r - range) && hex.r <= (activeHex.r + range)) &&
+                (hex.s >= (activeHex.s - range) && hex.s <= (activeHex.s + range))) {
+                results.push(hex)
+            }
+        }
+
+        return results
+    }
 }
 
 Layout.pointy = new Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);

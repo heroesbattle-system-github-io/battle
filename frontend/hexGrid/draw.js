@@ -25,13 +25,63 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
 
     if (point === undefined) point = new Point(99999, 9999);
 
+    let activeHex = new Hex(5, 5, -10);
+    const range = 3;
+
     hexes.forEach(hex => {
         drawHex(ctx, layout, hex, point);
         if (withLabels) drawHexLabel(ctx, layout, hex);
     });
+
+    drawActiveHexes(ctx, layout, activeHex, hexes, range);
 }
 
-function drawHex(ctx, layout, hex, point) {
+function drawActiveHexes(ctx, layout, activeHex, hexes, range) {
+    let results = layout.getHexRange(activeHex, hexes, range);
+
+    results.forEach(hex => {
+        const corners = layout.polygonCorners(hex);
+
+        ctx.beginPath();
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "rgba(0,0,0,0.4)";
+        ctx.lineWidth = 1;
+
+        ctx.moveTo(corners[5].x, corners[5].y);
+
+        for (let i = 0; i < 6; i++) {
+            ctx.lineTo(corners[i].x, corners[i].y);
+        }
+
+        if (hex.q === activeHex.q &&
+            hex.r === activeHex.r &&
+            hex.s === activeHex.s
+        ) ctx.fillStyle = "green";
+        ctx.stroke();
+        ctx.fill();
+    });
+}
+
+function drawHex2(ctx, layout, hex) {
+    const corners = layout.polygonCorners(hex);
+    ctx.beginPath();
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.moveTo(corners[5].x, corners[5].y);
+
+    for (let i = 0; i < 6; i++) {
+        ctx.lineTo(corners[i].x, corners[i].y);
+    }
+
+    ctx.fill();
+    if (hex.q === 8 && hex.r === -1 && hex.s === -7) {
+        ctx.fillStyle = "green";
+        ctx.fill();
+    }
+}
+
+function drawHex(ctx, layout, hex) {
     const corners = layout.polygonCorners(hex);
 
     ctx.beginPath();
@@ -42,10 +92,7 @@ function drawHex(ctx, layout, hex, point) {
     for (let i = 0; i < 6; i++) {
         ctx.lineTo(corners[i].x, corners[i].y);
     }
-    if (layout.insideHex(point, corners)) {
-        ctx.fillStyle = "green";
-        ctx.fill();
-    }
+
     ctx.stroke();
 }
 
@@ -102,21 +149,21 @@ drawGrid("layout-test-size-2", "transparent", true,
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext('2d');
 
-canvas.onmousemove = function (e) {
+// canvas.onmousemove = function (e) {
 
-    let rect = this.getBoundingClientRect(),
-        x = e.clientX - rect.left - canvas.width / 2,
-        y = e.clientY - rect.top - canvas.height / 2,
-        i = 0, r;
+//     let rect = this.getBoundingClientRect(),
+//         x = e.clientX - rect.left - canvas.width / 2,
+//         y = e.clientY - rect.top - canvas.height / 2,
+//         i = 0, r;
 
-    ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+//     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
-    drawGrid(
-        "layout-test-size-2",
-        "transparent",
-        true,
-        new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0)),
-        undefined,
-        new Point(x, y)
-    );
-};
+//     drawGrid(
+//         "layout-test-size-2",
+//         "transparent",
+//         true,
+//         new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0)),
+//         undefined,
+//         new Point(x, y)
+//     );
+// };
