@@ -25,20 +25,37 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
 
     if (point === undefined) point = new Point(99999, 9999);
 
-    let activeHex = new Hex(5, 5, -10);
-    const range = 3;
+    let activeHex = new Hex(0, 0, 0);
+
+    let obstackles = [
+        new Hex(0, -2, 2),
+        new Hex(-1, -1, 2),
+        new Hex(-2, 0, 2),
+        new Hex(0, -1, 1),
+        new Hex(-3, 1, 2),
+        new Hex(1, -3, 2),
+        new Hex(-4, -5, 9)
+    ]
+
+    const movementRange = 5
 
     hexes.forEach(hex => {
         drawHex(ctx, layout, hex, point);
         if (withLabels) drawHexLabel(ctx, layout, hex);
     });
 
-    drawActiveHexes(ctx, layout, activeHex, hexes, range);
+    drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange);
 }
 
-function drawActiveHexes(ctx, layout, activeHex, hexes, range) {
-    let results = layout.getHexRange(activeHex, hexes, range);
+function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange) {
+    const reachable = layout.getReachableHex(activeHex, movementRange, obstackles);
+    let results = [];
 
+    for (let i = 0; i < reachable.length; i++) {
+        results.push(...reachable[i])
+    }
+    results.push(...obstackles)
+    
     results.forEach(hex => {
         const corners = layout.polygonCorners(hex);
 
@@ -53,32 +70,21 @@ function drawActiveHexes(ctx, layout, activeHex, hexes, range) {
             ctx.lineTo(corners[i].x, corners[i].y);
         }
 
+        obstackles.forEach(obstacle => {
+            if (hex.q === obstacle.q &&
+                hex.r === obstacle.r &&
+                hex.s === obstacle.s
+            ) ctx.fillStyle = "red";
+        });
+
         if (hex.q === activeHex.q &&
             hex.r === activeHex.r &&
             hex.s === activeHex.s
         ) ctx.fillStyle = "green";
+
         ctx.stroke();
         ctx.fill();
     });
-}
-
-function drawHex2(ctx, layout, hex) {
-    const corners = layout.polygonCorners(hex);
-    ctx.beginPath();
-    ctx.strokeStyle = "black";
-    ctx.fillStyle = "black";
-    ctx.lineWidth = 1;
-    ctx.moveTo(corners[5].x, corners[5].y);
-
-    for (let i = 0; i < 6; i++) {
-        ctx.lineTo(corners[i].x, corners[i].y);
-    }
-
-    ctx.fill();
-    if (hex.q === 8 && hex.r === -1 && hex.s === -7) {
-        ctx.fillStyle = "green";
-        ctx.fill();
-    }
 }
 
 function drawHex(ctx, layout, hex) {

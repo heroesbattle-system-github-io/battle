@@ -98,6 +98,13 @@ Hex.directions = [
     new Hex(0, 1, -1)
 ];
 
+Hex.prototype.toString = function () {
+    if (this.q === -0) this.q = 0
+    if (this.s === -0) this.s = 0
+    if (this.r === -0) this.r = 0
+    return this.q + " " + this.r + " " + this.s;
+}
+
 class Orientation {
     constructor(f0, f1, f2, f3, b0, b1, b2, b3, start_angle) {
         this.f0 = f0;
@@ -160,17 +167,17 @@ class Layout {
 
     insideHex(point, corners) {
         const x = point.x, y = point.y;
-    
+
         let inside = false;
         for (let i = 0, j = corners.length - 1; i < corners.length; j = i++) {
             let xi = corners[i].x, yi = corners[i].y;
             let xj = corners[j].x, yj = corners[j].y;
-    
+
             let intersect = ((yi > y) != (yj > y))
                 && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
             if (intersect) inside = !inside;
         }
-    
+
         return inside;
     }
 
@@ -188,6 +195,41 @@ class Layout {
         }
 
         return results
+    }
+
+    getReachableHex(activeHex, movement, obstackles) {
+        let fringes = [];
+        let cost_so_far = {}; cost_so_far[activeHex] = 0;
+        let came_from = {}; came_from[activeHex] = null;
+
+        fringes.push([activeHex])
+
+        for (let i = 1; i <= movement; i++) {
+            fringes.push([]);
+
+            fringes[i - 1].forEach(hex => {
+                for (let j = 0; j < 6; j++) {
+                    let neighbor = hex.neighbor(j)
+                    if (
+                        !this.isObstacle(neighbor, obstackles) &&
+                        cost_so_far[neighbor] === undefined 
+                    ) {
+                        cost_so_far[neighbor] = i;
+                        came_from[neighbor] = hex;
+                        fringes[i].push(neighbor)
+                    }
+                }
+
+            });
+        }
+        return fringes;
+    }
+
+    isObstacle(hex, obstackles) {
+        for (const obstackle of obstackles) {
+            if (hex.toString() === obstackle.toString()) return true;
+        }
+        return false;
     }
 }
 
