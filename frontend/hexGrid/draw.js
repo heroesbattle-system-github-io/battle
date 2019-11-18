@@ -31,25 +31,9 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
     });
 }
 
-function inside(point, vs) {
-    var x = point.x, y = point.y;
-
-    var inside = false;
-    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-        var xi = vs[i].x, yi = vs[i].y;
-        var xj = vs[j].x, yj = vs[j].y;
-
-        var intersect = ((yi > y) != (yj > y))
-            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
-    }
-
-    return inside;
-};
-
 function drawHex(ctx, layout, hex, point) {
     const corners = layout.polygonCorners(hex);
-    
+
     ctx.beginPath();
     ctx.strokeStyle = "black"
     ctx.lineWidth = 1;
@@ -58,7 +42,7 @@ function drawHex(ctx, layout, hex, point) {
     for (let i = 0; i < 6; i++) {
         ctx.lineTo(corners[i].x, corners[i].y);
     }
-    if (inside(point, corners)) {
+    if (layout.insideHex(point, corners)) {
         ctx.fillStyle = "green";
         ctx.fill();
     }

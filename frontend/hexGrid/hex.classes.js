@@ -157,6 +157,22 @@ class Layout {
 
         return corners;
     }
+
+    insideHex(point, corners) {
+        const x = point.x, y = point.y;
+    
+        let inside = false;
+        for (let i = 0, j = corners.length - 1; i < corners.length; j = i++) {
+            let xi = corners[i].x, yi = corners[i].y;
+            let xj = corners[j].x, yj = corners[j].y;
+    
+            let intersect = ((yi > y) != (yj > y))
+                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+    
+        return inside;
+    };
 }
 
 Layout.pointy = new Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
