@@ -12,7 +12,7 @@ class Hex {
         this.s = s;
 
         if (Math.round(q + r + s) !== 0)
-            console.error("q + r + s must be zero");
+            throw new Error("(q + r + s) in Hex must be zero");
     }
 
     add(hex) {
@@ -31,13 +31,11 @@ class Hex {
         return (Math.abs(this.q) + Math.abs(this.r) + Math.abs(this.s)) / 2;
     }
 
-    hex_distance(hex) {
+    distance(hex) {
         return this.subtract(hex).length();
     }
 
-    /* To make directions outside the range 0..5 work, 
-        use hex_directions[(6 + (direction % 6)) % 6]*/
-    static direction(direction /* 0 to 5 */) {
+    static direction(direction) {
         return Hex.directions[direction];
     }
 
@@ -62,30 +60,6 @@ class Hex {
             si = -qi - ri;
 
         return new Hex(qi, ri, si);
-    }
-
-    lerp(b, t) {
-        return new Hex(
-            this.q * (1.0 - t) + b.q * t,
-            this.r * (1.0 - t) + b.r * t,
-            this.s * (1.0 - t) + b.s * t
-        );
-    }
-
-    linedraw(b) {
-        const N = this.distance(b);
-
-        let a_nudge = new Hex(this.q + 0.000001, this.r + 0.000001, this.s - 0.000002);
-        let b_nudge = new Hex(b.q + 0.000001, b.r + 0.000001, b.s - 0.000002);
-
-        let results = [];
-        let step = 1.0 / Math.max(N, 1);
-
-        for (let i = 0; i <= N; i++) {
-            results.push(a_nudge.lerp(b_nudge, step * i).round());
-        }
-
-        return results;
     }
 }
 
@@ -131,7 +105,8 @@ class Layout {
             * this.size.x;
         const y = (this.orientation.f2 * hex.q + this.orientation.f3 * hex.r)
             * this.size.y;
-        return new Point(x + this.origin.x, y + this.origin.y);
+
+        return new Point(x + this.origin.x, y + this.origin.y)
     }
 
     pixelToHex(p) {
@@ -142,7 +117,7 @@ class Layout {
         const q = this.orientation.b0 * pt.x + this.orientation.b1 * pt.y,
             r = this.orientation.b2 * pt.x + this.orientation.b3 * pt.y;
 
-        return new Hex(q, r, -q - r);
+        return new Hex(q, r, -q - r)
     }
 
     hexCornerOffset(corner) {
@@ -151,18 +126,19 @@ class Layout {
         return new Point(
             this.size.x * Math.cos(angle),
             this.size.y * Math.sin(angle)
-        );
+        )
     }
 
     polygonCorners(h) {
         let corners = [];
         const center = this.hexToPixel(h);
+
         for (let i = 0; i < 6; i++) {
             let offset = this.hexCornerOffset(i);
             corners.push(new Point(center.x + offset.x, center.y + offset.y));
         }
 
-        return corners;
+        return corners
     }
 
     insideHex(point, corners) {
@@ -178,7 +154,7 @@ class Layout {
             if (intersect) inside = !inside;
         }
 
-        return inside;
+        return inside
     }
 
     getHexRange(activeHex, hexes, range) {
@@ -187,21 +163,23 @@ class Layout {
         for (let i = 0; i < hexes.length; i++) {
             let hex = hexes[i]
 
-            if ((hex.q >= (activeHex.q - range) && hex.q <= (activeHex.q + range)) &&
+            if (
+                (hex.q >= (activeHex.q - range) && hex.q <= (activeHex.q + range)) &&
                 (hex.r >= (activeHex.r - range) && hex.r <= (activeHex.r + range)) &&
-                (hex.s >= (activeHex.s - range) && hex.s <= (activeHex.s + range))) {
-                results.push(hex)
-            }
+                (hex.s >= (activeHex.s - range) && hex.s <= (activeHex.s + range))
+            ) results.push(hex)
         }
 
         return results
     }
 
     getReachableHex(activeHex, movement, obstackles) {
-        let fringes = [];
-        let cost_so_far = {}; cost_so_far[activeHex] = 0;
-        let came_from = {}; came_from[activeHex] = null;
+        let fringes = [],
+            cost_so_far = {},
+            came_from = {};
 
+        cost_so_far[activeHex] = 0;
+        came_from[activeHex] = null;
         fringes.push([activeHex])
 
         for (let i = 1; i <= movement; i++) {
@@ -220,23 +198,23 @@ class Layout {
                         fringes[i].push(neighbor)
                     }
                 }
-
             });
         }
+
         return fringes;
     }
 
     isObstacle(hex, obstackles) {
-        for (const obstackle of obstackles) {
+        for (const obstackle of obstackles)
             if (hex.toString() === obstackle.toString()) return true;
-        }
+
         return false;
     }
 
     isOutsideBorders(hex) {
         if (hex.r < -5 || hex.r > 5) return true;
         if (Math.abs(hex.q) + Math.abs(hex.s) > 15) return true;
-        
+
         switch (hex.r) {
             case -5: if (hex.s > 9) return true; break;
             case -3: if (hex.s > 8) return true; break;
@@ -250,4 +228,3 @@ class Layout {
 }
 
 Layout.pointy = new Orientation(Math.sqrt(3.0), Math.sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
-Layout.flat = new Orientation(3.0 / 2.0, 0.0, Math.sqrt(3.0) / 2.0, Math.sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, Math.sqrt(3.0) / 3.0, 0.0);
