@@ -1,4 +1,6 @@
-function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
+function drawGrid(drawParams, hexes, point) {
+    const { id, backgroundColor, withLabels, layout } = drawParams;
+
     const canvas = document.getElementById(id);
     const ctx = canvas.getContext('2d');
 
@@ -15,15 +17,15 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
         ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
-    if (hexes === undefined) {
+    if (hexes === undefined)
         hexes = shapeRectangle(15, 11, permuteQRS);
-    }
 
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, width, height);
     ctx.translate(width / 2, height / 2);
 
-    if (point === undefined) point = new Point(99999, 9999);
+    if (point === undefined)
+        point = _helper.NON_EXISTING_POINT
 
     let activeHex = new Hex(6, 0, -6);
 
@@ -39,11 +41,13 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
     const movementRange = 17;
 
     hexes.forEach(hex => {
-        drawHex(ctx, layout, hex, point);
+        drawHex(ctx, layout, hex);
         if (withLabels) drawHexLabel(ctx, layout, hex);
     });
 
     drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point);
+
+    return hexes
 }
 
 function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point) {
@@ -107,35 +111,38 @@ function drawHex(ctx, layout, hex) {
 }
 
 function colorForHex(hex) {
-    if (hex.q === 0 && hex.r === 0 && hex.s === 0) {
+    if (hex.q === 0 && hex.r === 0 && hex.s === 0)
         return "hsl(0, 50%, 0%)";
-    } else if (hex.q === 0) {
+    else if (hex.q === 0)
         return "hsl(90, 70%, 35%)";
-    } else if (hex.r === 0) {
+    else if (hex.r === 0)
         return "hsl(200, 100%, 35%)";
-    } else if (hex.s === 0) {
+    else if (hex.s === 0)
         return "hsl(300, 40%, 50%)";
-    } else {
+    else
         return "hsl(0, 0%, 50%)";
-    }
 }
 
 function drawHexLabel(ctx, layout, hex) {
-    const pointSize = Math.round(0.5 * Math.min(Math.abs(layout.size.x), Math.abs(layout.size.y)));
-    var center = layout.hexToPixel(hex);
+    const pointSize = Math.round(
+        0.5 * Math.min(Math.abs(layout.size.x),
+            Math.abs(layout.size.y))
+    );
+
+    const center = layout.hexToPixel(hex);
     ctx.fillStyle = colorForHex(hex);
     ctx.font = `${pointSize}px sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(hex.length() === 0 ? "q,r,s" : (hex.q + "," + hex.r + "," + hex.s), center.x, center.y);
+
+    ctx.fillText(
+        hex.length() === 0
+            ? "q,r,s"
+            : (hex.q + "," + hex.r + "," + hex.s), center.x, center.y
+    );
 }
 
-function permuteQRS(q, r, s) { return new Hex(q, r, s); }
-function permuteSRQ(s, r, q) { return new Hex(q, r, s); }
-function permuteSQR(s, q, r) { return new Hex(q, r, s); }
-function permuteRQS(r, q, s) { return new Hex(q, r, s); }
-function permuteRSQ(r, s, q) { return new Hex(q, r, s); }
-function permuteQSR(q, s, r) { return new Hex(q, r, s); }
+function permuteQRS(q, r, s) { return new Hex(q, r, s) }
 
 function shapeRectangle(w, h, constructor) {
     let hexes = [];
@@ -149,16 +156,15 @@ function shapeRectangle(w, h, constructor) {
             hexes.push(constructor(i, j, -i - j));
         }
     }
+
     return hexes;
 }
 
-drawGrid("layout-test-size-2", "transparent", true,
-    new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0)));
+let hexes = drawGrid(_helper.INITIAL_CANVAS_DRAW_PARAMS);
 
+setOnHoverEvent(hexes);
 
-setOnHoverEvent();
-
-function setOnHoverEvent(reachable) {
+function setOnHoverEvent(hexes) {
     const canvas = document.querySelector("canvas");
     const ctx = canvas.getContext('2d');
 
@@ -171,11 +177,8 @@ function setOnHoverEvent(reachable) {
         ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
         drawGrid(
-            "layout-test-size-2",
-            "transparent",
-            true,
-            new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0)),
-            undefined,
+            _helper.INITIAL_CANVAS_DRAW_PARAMS,
+            hexes,
             new Point(x, y)
         );
     })
