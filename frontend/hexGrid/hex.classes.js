@@ -212,7 +212,8 @@ class Layout {
                     let neighbor = hex.neighbor(j)
                     if (
                         !this.isObstacle(neighbor, obstackles) &&
-                        cost_so_far[neighbor] === undefined 
+                        cost_so_far[neighbor] === undefined &&
+                        !this.isOutsideBorders(neighbor)
                     ) {
                         cost_so_far[neighbor] = i;
                         came_from[neighbor] = hex;
@@ -229,6 +230,12 @@ class Layout {
         for (const obstackle of obstackles) {
             if (hex.toString() === obstackle.toString()) return true;
         }
+        return false;
+    }
+
+    isOutsideBorders(hex) {
+        console.log(hex)
+        if (hex.r < -5 || hex.r > 5) return true;
         return false;
     }
 }

@@ -37,7 +37,7 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
         new Hex(-4, -5, 9)
     ]
 
-    const movementRange = 6;
+    const movementRange =  6;
 
     hexes.forEach(hex => {
         drawHex(ctx, layout, hex, point);
@@ -158,10 +158,11 @@ drawGrid("layout-test-size-2", "transparent", true,
 
 
 setOnHoverEvent();
+
 function setOnHoverEvent(reachable) {
     const canvas = document.querySelector("canvas");
     const ctx = canvas.getContext('2d');
-
+    
     canvas.addEventListener("mousemove", e => {
         let rect = e.target.getBoundingClientRect(),
             x = e.clientX - rect.left - canvas.width / 2,
