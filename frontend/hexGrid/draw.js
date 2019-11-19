@@ -64,9 +64,9 @@ function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, poin
         const corners = layout.polygonCorners(hex);
 
         ctx.beginPath();
-        ctx.strokeStyle = "black"
+        ctx.strokeStyle = "rgba(255, 255, 0, 0.4)"
         ctx.lineWidth = 1;
-        ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
 
         ctx.moveTo(corners[5].x, corners[5].y);
         for (let i = 0; i < 6; i++) {
@@ -74,7 +74,7 @@ function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, poin
         }
 
         if (layout.insideHex(point, corners))
-            ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
 
         obstackles.forEach(obstacle => {
             if (hex.q === obstacle.q &&
@@ -97,7 +97,7 @@ function drawHex(ctx, layout, hex) {
     const corners = layout.polygonCorners(hex);
 
     ctx.beginPath();
-    ctx.strokeStyle = "black"
+    ctx.strokeStyle = "rgb(255, 255, 0, 0.4)"
     ctx.lineWidth = 1;
     ctx.moveTo(corners[5].x, corners[5].y);
 
