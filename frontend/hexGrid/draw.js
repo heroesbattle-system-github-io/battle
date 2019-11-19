@@ -37,25 +37,26 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
         new Hex(-4, -5, 9)
     ]
 
-    const movementRange = 5
+    const movementRange = 6;
 
     hexes.forEach(hex => {
         drawHex(ctx, layout, hex, point);
         if (withLabels) drawHexLabel(ctx, layout, hex);
     });
 
-    drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange);
+    drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point);
 }
 
-function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange) {
-    const reachable = layout.getReachableHex(activeHex, movementRange, obstackles);
+function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point) {
+    let reachable = layout.getReachableHex(activeHex, movementRange, obstackles);
     let results = [];
 
     for (let i = 0; i < reachable.length; i++) {
         results.push(...reachable[i])
     }
+    reachable = [...results];
     results.push(...obstackles)
-    
+
     results.forEach(hex => {
         const corners = layout.polygonCorners(hex);
 
@@ -68,6 +69,10 @@ function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange) {
 
         for (let i = 0; i < 6; i++) {
             ctx.lineTo(corners[i].x, corners[i].y);
+        }
+
+        if (layout.insideHex(point, corners)) {
+            ctx.fillStyle = "black";
         }
 
         obstackles.forEach(obstacle => {
@@ -152,24 +157,26 @@ drawGrid("layout-test-size-2", "transparent", true,
     new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0)));
 
 
-const canvas = document.querySelector("canvas");
-const ctx = canvas.getContext('2d');
+setOnHoverEvent();
+function setOnHoverEvent(reachable) {
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext('2d');
 
-// canvas.onmousemove = function (e) {
+    canvas.addEventListener("mousemove", e => {
+        let rect = e.target.getBoundingClientRect(),
+            x = e.clientX - rect.left - canvas.width / 2,
+            y = e.clientY - rect.top - canvas.height / 2,
+            i = 0, r;
 
-//     let rect = this.getBoundingClientRect(),
-//         x = e.clientX - rect.left - canvas.width / 2,
-//         y = e.clientY - rect.top - canvas.height / 2,
-//         i = 0, r;
+        ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
-//     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
-
-//     drawGrid(
-//         "layout-test-size-2",
-//         "transparent",
-//         true,
-//         new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0)),
-//         undefined,
-//         new Point(x, y)
-//     );
-// };
+        drawGrid(
+            "layout-test-size-2",
+            "transparent",
+            true,
+            new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0)),
+            undefined,
+            new Point(x, y)
+        );
+    })
+}
