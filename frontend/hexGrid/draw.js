@@ -25,7 +25,7 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
 
     if (point === undefined) point = new Point(99999, 9999);
 
-    let activeHex = new Hex(0, 0, 0);
+    let activeHex = new Hex(6, 0, -6);
 
     let obstackles = [
         new Hex(0, -2, 2),
@@ -33,11 +33,10 @@ function drawGrid(id, backgroundColor, withLabels, layout, hexes, point) {
         new Hex(-2, 0, 2),
         new Hex(0, -1, 1),
         new Hex(-3, 1, 2),
-        new Hex(1, -3, 2),
-        new Hex(-4, -5, 9)
+        new Hex(1, -3, 2)
     ]
 
-    const movementRange =  6;
+    const movementRange = 17;
 
     hexes.forEach(hex => {
         drawHex(ctx, layout, hex, point);
@@ -162,7 +161,7 @@ setOnHoverEvent();
 function setOnHoverEvent(reachable) {
     const canvas = document.querySelector("canvas");
     const ctx = canvas.getContext('2d');
-    
+
     canvas.addEventListener("mousemove", e => {
         let rect = e.target.getBoundingClientRect(),
             x = e.clientX - rect.left - canvas.width / 2,

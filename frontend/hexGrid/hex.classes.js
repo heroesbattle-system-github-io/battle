@@ -234,9 +234,18 @@ class Layout {
     }
 
     isOutsideBorders(hex) {
-        console.log(hex)
         if (hex.r < -5 || hex.r > 5) return true;
-        return false;
+        if (Math.abs(hex.q) + Math.abs(hex.s) > 15) return true;
+        
+        switch (hex.r) {
+            case -5: if (hex.s > 9) return true; break;
+            case -3: if (hex.s > 8) return true; break;
+            case -1: if (hex.s > 7) return true; break;
+            case 1: if (hex.s > 6) return true; break;
+            case 3: if (hex.s > 5) return true; break;
+            case 5: if (hex.s > 4) return true; break;
+            default: return false;
+        }
     }
 }
 
