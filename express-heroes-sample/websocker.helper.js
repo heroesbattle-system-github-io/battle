@@ -106,11 +106,6 @@ const _helper = {
         return this.setUnitMovingOrder(gameRoom);
     },
 
-    sendPlayerHisType(gameRoom) {
-        gameRoom.firstClient.ctx.send(this.PLAYER_FIRST_TYPE_JSON);
-        gameRoom.secondClient.ctx.send(this.PLAYER_SECOND_TYPE_JSON);
-    },
-
     updateTurnStatus(gameRoom) {
         if (gameRoom.turn === this.FIRST_PLAYER_TURN) {
             gameRoom.firstClient.ctx.send(this.YOUR_TURN_TRUE_JSON);
