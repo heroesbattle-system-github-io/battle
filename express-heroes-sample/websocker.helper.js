@@ -68,14 +68,41 @@ const _helper = {
         return gameRooms
     },
 
+    setInitialPalyerTurnStatus(gameRoom) {
+        let firstPlayerTurn = true;
+        if (Math.floor(Math.random() * 2) === 0)
+            gameRoom.turn = this.FIRST_PLAYER_TURN
+        else {
+            gameRoom.turn = this.SECOND_PLAYER_TURN;
+            firstPlayerTurn = false;
+        }
+
+        return { gameRoom, firstPlayerTurn }
+    },
+
     startGame(gameRoom) {
-        const startGameMessage = `{"message":"start game", "roomID":"${gameRoom.id}"}`;
-        this.sendSocketMessageToPlayers(gameRoom, startGameMessage)
+        let turnsData = this.setInitialPalyerTurnStatus(gameRoom),
+            firstPlayerTurn = turnsData.firstPlayerTurn;
 
-        gameRoom.turn = this.SECOND_PLAYER_TURN;
+        gameRoom = turnsData.gameRoom
 
-        this.sendPlayerHisType(gameRoom);
-        this.updateTurnStatus(gameRoom);
+        const startGameFirstPlayer = `{
+                "message":"start game", 
+                "roomID":"${gameRoom.id}",
+                "type": "${this.FIRST_PLAYER_TYPE}",
+                "yourTurn": ${firstPlayerTurn}
+        }`;
+
+        const startGameSecondPlayer = `{
+                "message":"start game", 
+                "roomID":"${gameRoom.id}",
+                "type": "${this.SECOND_PLAYER_TYPE}",
+                "yourTurn": ${!firstPlayerTurn}
+        }`;
+
+        gameRoom.firstClient.ctx.send(startGameFirstPlayer);
+        gameRoom.secondClient.ctx.send(startGameSecondPlayer);
+
         return this.setUnitMovingOrder(gameRoom);
     },
 

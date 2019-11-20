@@ -1,8 +1,23 @@
 const socket = new WebSocket("ws://localhost:4451/");
 
-
-console.log(12);
+let playerData = {
+    gameID: -1,
+    yourTurn: false,
+    playerType: ""
+}
 
 socket.onmessage = (msg) => {
-    console.log(msg.data)
+    const message = JSON.parse(msg.data);
+
+    switch (message["message"]) {
+        case "start game":
+            playerData.gameID = message["roomID"]
+            playerData.playerType = message["type"]
+            playerData.yourTurn = message["yourTurn"]
+            break;
+
+        default:
+            break;
+    }
+    console.log(message)
 }
