@@ -16,3 +16,14 @@ body {
     margin: 0;
     padding: 0;
 }
+
+#hexagon-grid {
+    position: absolute;
+    z-index: 9;
+}
+
+#units {
+    z-index: 10;
+    user-select: none;
+    pointer-events: none;
+}
