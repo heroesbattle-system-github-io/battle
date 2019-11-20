@@ -27,7 +27,7 @@ function drawGrid(drawParams, hexes, point) {
     if (point === undefined)
         point = _helper.NON_EXISTING_POINT
 
-    let activeHex = new Hex(6, 0, -6);
+    let activeHex = new Hex(-6, -2, 8);
 
     let obstackles = [
         new Hex(0, -2, 2),
@@ -167,6 +167,26 @@ function setOnHoverEvent(hexes) {
     const ctx = canvas.getContext('2d');
 
     canvas.addEventListener("mousemove", e => {
+        let rect = e.target.getBoundingClientRect(),
+            x = e.clientX - rect.left - canvas.width / 2,
+            y = e.clientY - rect.top - canvas.height / 2,
+            i = 0, r;
+
+        ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+
+        drawGrid(
+            _helper.INITIAL_CANVAS_DRAW_PARAMS,
+            hexes,
+            new Point(x, y)
+        );
+    })
+}
+
+function setOnClickEvent(hexes) {
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext('2d');
+
+    canvas.addEventListener("click", e => {
         let rect = e.target.getBoundingClientRect(),
             x = e.clientX - rect.left - canvas.width / 2,
             y = e.clientY - rect.top - canvas.height / 2,

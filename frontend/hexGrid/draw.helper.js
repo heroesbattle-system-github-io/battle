@@ -2,7 +2,7 @@ const _helper = {
     INITIAL_CANVAS_DRAW_PARAMS: {
         id: "hexagon-grid",
         backgroundColor: "transparent",
-        withLabels: false,
+        withLabels: true,
         layout: new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0))
     },
 
