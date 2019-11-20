@@ -1,0 +1,118 @@
+{
+	"Inferno": [{
+			"name": "Familiar",
+			"amount": 120
+		},
+		{
+			"name": "Horned Overseer",
+			"amount": 70
+		},
+		{
+			"name": "Hell Hound",
+			"amount": 54
+		},
+		{
+			"name": "Succubus Mistress ",
+			"amount": 20
+		},
+		{
+			"name": "Nightmare",
+			"amount": 15
+		},
+		{
+			"name": "Pit Lord",
+			"amount": 7
+		},
+		{
+			"name": "Arch Devil",
+			"amount": 6
+		}
+	],
+	"Necropolis": [{
+			"name": "Skeleton",
+			"amount": 170
+		},
+		{
+			"name": "Plague Zombie",
+			"amount": 85
+		},
+		{
+			"name": "Spectre",
+			"amount": 100
+		},
+		{
+			"name": "Vampire Lord",
+			"amount": 56
+		},
+		{
+			"name": "ArchLich",
+			"amount": 15
+		},
+		{
+			"name": "Wraith",
+			"amount": 12
+		},
+		{
+			"name": "Spectral Dragon",
+			"amount": 12
+		}
+	],
+	"Dungeon": [{
+			"name": "Scout",
+			"amount": 145
+		},
+		{
+			"name": "Blood Fury",
+			"amount": 125
+		},
+		{
+			"name": "Minotaur Guard",
+			"amount": 120
+		},
+		{
+			"name": "Grim Raiders",
+			"amount": 40
+		},
+		{
+			"name": "Deep Hydra",
+			"amount": 10
+		},
+		{
+			"name": "Shadow Matriarch",
+			"amount": 12
+		},
+		{
+			"name": "Black Dragon",
+			"amount": 5
+		}
+	],
+	"Haven": [{
+			"name": "Conscript",
+			"amount": 145
+		},
+		{
+			"name": "Marksman",
+			"amount": 125
+		},
+		{
+			"name": "Squire",
+			"amount": 120
+		},
+		{
+			"name": "Imperial Griffin",
+			"amount": 40
+		},
+		{
+			"name": "Priest",
+			"amount": 10
+		},
+		{
+			"name": "Paladin",
+			"amount": 12
+		},
+		{
+			"name": "Seraph",
+			"amount": 5
+		}
+	]
+}

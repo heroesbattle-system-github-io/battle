@@ -1,0 +1,370 @@
+{
+	"Inferno": [{
+			"name": "Familiar",
+			"attack": 1,
+			"defence": 1,
+			"damage": {
+				"min": 2,
+				"max": 3
+			},
+			"initiative": 13,
+			"speed": 5,
+			"health": 6,
+			"shots": false
+		},
+		{
+			"name": "Horned Overseer",
+			"attack": 3,
+			"defence": 4,
+			"damage": {
+				"min": 1,
+				"max": 4
+			},
+			"initiative": 8,
+			"speed": 5,
+			"health": 13,
+			"shots": false
+		},
+		{
+			"name": "Hell Hound",
+			"attack": 4,
+			"defence": 2,
+			"damage": {
+				"min": 4,
+				"max": 6
+			},
+			"initiative": 13,
+			"speed": 8,
+			"health": 15,
+			"shots": false
+		},
+		{
+			"name": "Succubus Mistress ",
+			"attack": 6,
+			"defence": 6,
+			"damage": {
+				"min": 6,
+				"max": 13
+			},
+			"initiative": 10,
+			"speed": 4,
+			"health": 30,
+			"shots": true
+		},
+		{
+			"name": "Nightmare",
+			"attack": 18,
+			"defence": 18,
+			"damage": {
+				"min": 8,
+				"max": 16
+			},
+			"initiative": 16,
+			"speed": 8,
+			"health": 66,
+			"shots": false
+		},
+		{
+			"name": "Pit Lord",
+			"attack": 22,
+			"defence": 21,
+			"damage": {
+				"min": 13,
+				"max": 31
+			},
+			"initiative": 8,
+			"speed": 4,
+			"health": 120,
+			"shots": false
+		},
+		{
+			"name": "Arch Devil",
+			"attack": 31,
+			"defence": 29,
+			"damage": {
+				"min": 36,
+				"max": 66
+			},
+			"initiative": 11,
+			"speed": 7,
+			"health": 199,
+			"shots": false
+		}
+	],
+	"Necropolis": [{
+			"name": "Skeleton",
+			"attack": 1,
+			"defence": 2,
+			"damage": {
+				"min": 1,
+				"max": 1
+			},
+			"initiative": 10,
+			"speed": 5,
+			"health": 4,
+			"shots": false
+		},
+		{
+			"name": "Plague Zombie",
+			"attack": 2,
+			"defence": 2,
+			"damage": {
+				"min": 2,
+				"max": 3
+			},
+			"initiative": 7,
+			"speed": 4,
+			"health": 17,
+			"shots": false
+		},
+		{
+			"name": "Spectre",
+			"attack": 4,
+			"defence": 4,
+			"damage": {
+				"min": 4,
+				"max": 6
+			},
+			"initiative": 10,
+			"speed": 5,
+			"health": 19,
+			"shots": false
+		},
+		{
+			"name": "Vampire Lord",
+			"attack": 9,
+			"defence": 9,
+			"damage": {
+				"min": 7,
+				"max": 11
+			},
+			"initiative": 11,
+			"speed": 7,
+			"health": 35,
+			"shots": false
+		},
+		{
+			"name": "ArchLich",
+			"attack": 19,
+			"defence": 19,
+			"damage": {
+				"min": 16,
+				"max": 20
+			},
+			"initiative": 10,
+			"speed": 3,
+			"health": 55,
+			"shots": true
+		},
+		{
+			"name": "Wraith",
+			"attack": 26,
+			"defence": 24,
+			"damage": {
+				"min": 25,
+				"max": 30
+			},
+			"initiative": 11,
+			"speed": 6,
+			"health": 100,
+			"shots": false
+		},
+		{
+			"name": "Spectral Dragon",
+			"attack": 30,
+			"defence": 28,
+			"damage": {
+				"min": 25,
+				"max": 35
+			},
+			"initiative": 11,
+			"speed": 7,
+			"health": 160,
+			"shots": false
+		}
+	],
+	"Dungeon": [{
+			"name": "Scout",
+			"attack": 4,
+			"defence": 3,
+			"damage": {
+				"min": 2,
+				"max": 4
+			},
+			"initiative": 12,
+			"speed": 5,
+			"health": 14,
+			"shots": true
+		},
+		{
+			"name": "Blood Fury",
+			"attack": 5,
+			"defence": 3,
+			"damage": {
+				"min": 5,
+				"max": 7
+			},
+			"initiative": 16,
+			"speed": 8,
+			"health": 16,
+			"shots": false
+		},
+		{
+			"name": "Minotaur Guard",
+			"attack": 5,
+			"defence": 2,
+			"damage": {
+				"min": 4,
+				"max": 7
+			},
+			"initiative": 8,
+			"speed": 5,
+			"health": 35,
+			"shots": false
+		},
+		{
+			"name": "Grim Raiders",
+			"attack": 10,
+			"defence": 9,
+			"damage": {
+				"min": 7,
+				"max": 14
+			},
+			"initiative": 11,
+			"speed": 8,
+			"health": 60,
+			"shots": false
+		},
+		{
+			"name": "Deep Hydra",
+			"attack": 15,
+			"defence": 15,
+			"damage": {
+				"min": 9,
+				"max": 14
+			},
+			"initiative": 7,
+			"speed": 5,
+			"health": 125,
+			"shots": false
+		},
+		{
+			"name": "Shadow Matriarch",
+			"attack": 20,
+			"defence": 20,
+			"damage": {
+				"min": 17,
+				"max": 27
+			},
+			"initiative": 10,
+			"speed": 4,
+			"health": 90,
+			"shots": true
+		},
+		{
+			"name": "Black Dragon",
+			"attack": 30,
+			"defence": 30,
+			"damage": {
+				"min": 45,
+				"max": 70
+			},
+			"initiative": 10,
+			"speed": 9,
+			"health": 240,
+			"shots": false
+		}
+	],
+	"Haven": [{
+			"name": "Conscript",
+			"attack": 1,
+			"defence": 2,
+			"damage": {
+				"min": 1,
+				"max": 2
+			},
+			"initiative": 8,
+			"speed": 4,
+			"health": 6,
+			"shots": false
+		},
+		{
+			"name": "Marksman",
+			"attack": 4,
+			"defence": 4,
+			"damage": {
+				"min": 2,
+				"max": 8
+			},
+			"initiative": 8,
+			"speed": 4,
+			"health": 10,
+			"shots": true
+		},
+		{
+			"name": "Squire",
+			"attack": 5,
+			"defence": 9,
+			"damage": {
+				"min": 2,
+				"max": 5
+			},
+			"initiative": 8,
+			"speed": 4,
+			"health": 26,
+			"shots": false
+		},
+		{
+			"name": "Imperial Griffin",
+			"attack": 9,
+			"defence": 8,
+			"damage": {
+				"min": 5,
+				"max": 15
+			},
+			"initiative": 15,
+			"speed": 7,
+			"health": 35,
+			"shots": false
+		},
+		{
+			"name": "Priest",
+			"attack": 16,
+			"defence": 16,
+			"damage": {
+				"min": 9,
+				"max": 12
+			},
+			"initiative": 10,
+			"speed": 5,
+			"health": 80,
+			"shots": true
+		},
+		{
+			"name": "Paladin",
+			"attack": 24,
+			"defence": 24,
+			"damage": {
+				"min": 20,
+				"max": 30
+			},
+			"initiative": 12,
+			"speed": 8,
+			"health": 100,
+			"shots": false
+		},
+		{
+			"name": "Seraph",
+			"attack": 31,
+			"defence": 31,
+			"damage": {
+				"min": 50,
+				"max": 50
+			},
+			"initiative": 11,
+			"speed": 8,
+			"health": 220,
+			"shots": false
+		}
+	]
+}
