@@ -4,10 +4,10 @@ const { Client } = require("./classes/Client.class");
 const { GameRoom } = require("./classes/GameRoom.class");
 const { _helper } = require("./websocker.helper")
 
-const { defaultUnitMapFirstPlayer, defaultUnitMapSecondPlayer } = require('./Unit/unit.class');
+const { infernoUnits, necropolisUnits, dungeonUnits, havenUnits } = require('./Unit/initializeUnit');
 
-let unitOrderFirst = defaultUnitMapFirstPlayer,
-  unitOrderSecond = defaultUnitMapSecondPlayer
+let unitOrderFirst = infernoUnits,
+  unitOrderSecond = dungeonUnits
 
 let gameRooms = [
   new GameRoom(1,

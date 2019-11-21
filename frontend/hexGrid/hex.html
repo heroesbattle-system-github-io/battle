@@ -8,10 +8,28 @@
     <link rel="stylesheet" href="./hex.css" />
   </head>
   <body>
+    <div class="wait-overflow">
+      <div class="wait-overflow__status-bar">
+        <div class="background-wrapper">
+          <h3 class="wait-overflow__status">
+            Дъяволы вторглись в эти земли, и пришло время отвоевать Райский
+            Мандат обратно для нерешительной династии АйронФист
+          </h3>
+          <div class="choose-army">
+            <a class="flag inferno" >
+            <a class="flag necropolis" >
+            <a class="flag dangeon" >
+            <a class="flag haven" >
+          </div>
+        </div>
+      </div>
+    </div>
+
     <figure class="canvas-container">
       <canvas id="hexagon-grid" width="1000" height="700"></canvas>
       <canvas id="units" width="1000" height="700"></canvas>
     </figure>
+
     <script src="./hex.classes.js"></script>
     <script src="./draw.helper.js"></script>
     <script src="./draw.js"></script>

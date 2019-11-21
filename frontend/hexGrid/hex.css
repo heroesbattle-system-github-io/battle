@@ -27,3 +27,101 @@ body {
     user-select: none;
     pointer-events: none;
 }
+
+.wait-overflow {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    z-index: 99999;
+    visibility: visible;
+    opacity: 1;
+    background-image: url("../assets/fog.png");
+    background-repeat: repeat;
+    transition: all .5s linear;
+}
+
+.wait-overflow.fadeOut {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.wait-overflow .wait-overflow__status-bar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url("../assets/panelbg.jpg");
+    background-repeat: repeat;
+    width: 420px;
+    height: 182px;
+    text-align: center;
+    padding: 40px 20px;
+    z-index: 9999;
+}
+
+.wait-overflow .background-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 420px;
+    transform: translate(-50%, -50%);
+    height: 194px;
+    padding: 40px 20px;
+    background-image: url("../assets/Background.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: inherit;
+}
+
+.wait-overflow .wait-overflow__status-bar .wait-overflow__status {
+    color: rgb(206, 206, 206);
+    margin: 10px 10px 10px 10px;
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .flag {
+    box-sizing: border-box;
+    width: 57px;
+    height: 64px;
+    margin: 20px;
+    background: url("./sprites/flags.png");
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .inferno {
+    background-position: 0px 0px;
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .inferno:hover {
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .necropolis {
+    background-position: 0px -320px;
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .necropolis:hover {
+    box-shadow: 0 0 10px rgba(217, 0, 255, 0.5);
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .dangeon {
+    background-position: 0px -385px;
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .dangeon:hover {
+    box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .haven {
+    background-position: 0px -512px;
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .haven:hover {
+    box-shadow: 0 0 10px rgba(238, 255, 0, 0.5);
+}
