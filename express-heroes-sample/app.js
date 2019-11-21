@@ -4,19 +4,8 @@ const { Client } = require("./classes/Client.class");
 const { GameRoom } = require("./classes/GameRoom.class");
 const { _helper } = require("./websocker.helper")
 
-const { infernoUnits, necropolisUnits, dungeonUnits, havenUnits } = require('./Unit/initializeUnit');
 
-let unitOrderFirst = infernoUnits,
-  unitOrderSecond = dungeonUnits
-
-let gameRooms = [
-  new GameRoom(1,
-    null,
-    null,
-    "",
-    JSON.parse(JSON.stringify(unitOrderFirst)),
-    JSON.parse(JSON.stringify(unitOrderSecond)))
-];
+let gameRooms = [new GameRoom(1, null, null, "", null, null)];
 
 let clients = [];
 let numberOfClients = 1;
@@ -26,15 +15,23 @@ const webSocketServer = new WebSocket.Server({
 });
 
 webSocketServer.on('connection', function (ws) {
-  let clientID = numberOfClients++,
-    client = new Client(ws, clientID)
-
-  clients.push(client);
-
-  gameRooms = _helper.putPlayerInGameRoom(gameRooms, client);
-
   ws.on('message', function (message) {
     let msgData = JSON.parse(message)
+
+    switch (msgData.message) {
+      case _helper.WEBSOCKET_MSG_SEND_ARMY_TYPE:
+        let clientID = numberOfClients++,
+          client = new Client(ws, clientID)
+
+        clients.push(client);
+
+        gameRooms = _helper.putPlayerInGameRoom(gameRooms, client, msgData.armyType);
+
+        break;
+
+      default:
+        break;
+    }
 
     if (msgData.message === _helper.END_TURN_MESSAGE) {
       for (let i = 0; i < gameRooms.length; i++) {

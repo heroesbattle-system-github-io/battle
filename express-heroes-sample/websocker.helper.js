@@ -1,5 +1,5 @@
 const { GameRoom } = require("./classes/GameRoom.class");
-const { defaultUnitMapFirstPlayer, defaultUnitMapSecondPlayer } = require('./Unit/unit.class');
+const { infernoUnits, necropolisUnits, dungeonUnits, havenUnits } = require('./Unit/initializeUnit');
 
 const _helper = {
     FIRST_PLAYER_TURN: "firstPlayer",
@@ -19,28 +19,55 @@ const _helper = {
 
     END_TURN_MESSAGE: "End Turn",
     ATTACK_MONSTER_MESSAGE: "attackMonster",
+    WEBSOCKET_MSG_SEND_ARMY_TYPE: "send army",
+
+    ARMY_TYPE_INFERNO: "inferno",
+    ARMY_TYPE_NECROPOLIS: "necropolis",
+    ARMY_TYPE_DANGEON: "dangeon",
+    ARMY_TYPE_HAVEN: "haven",
 
     BROWSER_LEAVES_PAGE: 1001,
     NORMAL_SOCKET_CLOSE: 1005,
+
+    findOutArmyByArmyType(type) {
+        switch (type) {
+            case this.ARMY_TYPE_INFERNO:
+                return infernoUnits
+            case this.ARMY_TYPE_NECROPOLIS:
+                return necropolisUnits
+            case this.ARMY_TYPE_DANGEON:
+                return dungeonUnits
+            case this.ARMY_TYPE_INFERNO:
+                return havenUnits
+            default:
+                return havenUnits
+        }
+    },
 
     sendSocketMessageToPlayers(gameRoom, msg) {
         gameRoom.firstClient.ctx.send(msg);
         gameRoom.secondClient.ctx.send(msg);
     },
 
-    putPlayerInGameRoom(gameRooms, player) {
+    putPlayerInGameRoom(gameRooms, player, armyType) {
         let allGameRoomsBusy = true;
+
+        const army = _helper.findOutArmyByArmyType(armyType)
 
         for (let i = 0; i < gameRooms.length; i++) {
             let gameRoom = gameRooms[i];
 
             if (gameRoom.firstClient === null && gameRoom.secondClient === null) {
                 gameRoom.firstClient = player;
+                gameRoom.unitOrderFirst = [...army];
+                gameRoom.firstPlayerArmyName = armyType;
                 allGameRoomsBusy = false;
                 break;
             }
             else if (gameRoom.firstClient === null && gameRoom.secondClient !== null) {
                 gameRoom.firstClient = player;
+                gameRoom.unitOrderFirst = [...army];
+                gameRoom.firstPlayerArmyName = armyType;
                 allGameRoomsBusy = false;
 
                 gameRoom = this.startGame(gameRoom);
@@ -48,6 +75,8 @@ const _helper = {
             }
             else if (gameRoom.firstClient !== null && gameRoom.secondClient === null) {
                 gameRoom.secondClient = player;
+                gameRoom.unitOrderSecond = [...army];
+                gameRoom.secondPlayerArmyName = armyType;
                 allGameRoomsBusy = false;
 
                 gameRoom = this.startGame(gameRoom);
@@ -57,10 +86,7 @@ const _helper = {
 
         if (allGameRoomsBusy) {
             let newGameRoomId = gameRooms.length + 1
-            gameRooms.push(new GameRoom(
-                newGameRoomId, null, null, "",
-                JSON.parse(JSON.stringify(defaultUnitMapFirstPlayer)),
-                JSON.parse(JSON.stringify(defaultUnitMapSecondPlayer))));
+            gameRooms.push(new GameRoom(newGameRoomId, null, null, "", null, null));
 
             gameRooms[gameRooms.length - 1].firstClient = player;
         }
@@ -90,14 +116,16 @@ const _helper = {
                 "message":"start game", 
                 "roomID":"${gameRoom.id}",
                 "type": "${this.FIRST_PLAYER_TYPE}",
-                "yourTurn": ${firstPlayerTurn}
+                "yourTurn": ${firstPlayerTurn},
+                "armyType": "${gameRoom.firstPlayerArmyName}"
         }`;
 
         const startGameSecondPlayer = `{
                 "message":"start game", 
                 "roomID":"${gameRoom.id}",
                 "type": "${this.SECOND_PLAYER_TYPE}",
-                "yourTurn": ${!firstPlayerTurn}
+                "yourTurn": ${!firstPlayerTurn},
+                "armyType": "${gameRoom.secondPlayerArmyName}"
         }`;
 
         gameRoom.firstClient.ctx.send(startGameFirstPlayer);
