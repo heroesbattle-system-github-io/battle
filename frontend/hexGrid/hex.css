@@ -52,8 +52,8 @@ body {
     transform: translate(-50%, -50%);
     background-image: url("../assets/panelbg.jpg");
     background-repeat: repeat;
-    width: 420px;
-    height: 182px;
+    width: 513px;
+    height: 252px;
     text-align: center;
     padding: 40px 20px;
     z-index: 9999;
@@ -63,9 +63,9 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 420px;
+    width: 513px;
     transform: translate(-50%, -50%);
-    height: 194px;
+    height: 252px;
     padding: 40px 20px;
     background-image: url("../assets/Background.png");
     background-size: contain;
@@ -82,6 +82,7 @@ body {
     display: flex;
     justify-content: center;
     flex-wrap: nowrap;
+    margin-bottom: 20px;
 }
 
 .wait-overflow .wait-overflow__status-bar .choose-army .flag {
@@ -102,12 +103,22 @@ body {
     box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }
 
+.wait-overflow .wait-overflow__status-bar .choose-army .inferno.active {
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+    border: 1px rgb(229, 255, 0) solid;
+}
+
 .wait-overflow .wait-overflow__status-bar .choose-army .necropolis {
     background-position: 0px -320px;
 }
 
 .wait-overflow .wait-overflow__status-bar .choose-army .necropolis:hover {
     box-shadow: 0 0 10px rgba(217, 0, 255, 0.5);
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .necropolis.active {
+    box-shadow: 0 0 15px rgba(217, 0, 255, 0.5);
+    border: 1px rgb(229, 255, 0) solid;
 }
 
 .wait-overflow .wait-overflow__status-bar .choose-army .dangeon {
@@ -118,10 +129,42 @@ body {
     box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
 }
 
+.wait-overflow .wait-overflow__status-bar .choose-army .dangeon.active {
+    box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    border: 1px rgb(229, 255, 0) solid;
+}
+
 .wait-overflow .wait-overflow__status-bar .choose-army .haven {
     background-position: 0px -512px;
 }
 
 .wait-overflow .wait-overflow__status-bar .choose-army .haven:hover {
     box-shadow: 0 0 10px rgba(238, 255, 0, 0.5);
+}
+
+.wait-overflow .wait-overflow__status-bar .choose-army .haven.active {
+    box-shadow: 0 0 10px rgba(238, 255, 0, 0.5);
+    border: 1px rgb(229, 255, 0) solid;
+}
+
+.wait-overflow .background-wrapper .btn {
+    padding: 10px;
+    background-image: url("../assets/panelbg.jpg");
+    border-top: 2px solid rgba(221, 221, 221, .7);
+    border-left: 2px solid rgba(221, 221, 221, .7);
+    border-bottom: 3px solid rgba(0, 0, 0, .6);
+    border-right: 3px solid rgba(0, 0, 0, .6);
+    outline: 1px solid rgba(255, 255, 126, 0.6);
+    background-position: 10px 20px;
+    color: rgb(221, 221, 221);
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.wait-overflow__status-bar.disabled {
+    pointer-events: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }

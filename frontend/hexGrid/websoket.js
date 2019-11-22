@@ -6,7 +6,8 @@ let playerData = {
     playerType: ""
 }
 
-_socketHelper.chooseArmyAndSendToWebsoket(socket);
+_socketHelper.chooseArmyEvent(_socketHelper.SELECTED_ARMY_CLASS);
+_socketHelper.sendArmyToWebsocketServer();
 
 socket.onmessage = (msg) => {
     const message = JSON.parse(msg.data);
