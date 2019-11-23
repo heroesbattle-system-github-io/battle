@@ -117,7 +117,8 @@ const _helper = {
                 "roomID":"${gameRoom.id}",
                 "type": "${this.FIRST_PLAYER_TYPE}",
                 "yourTurn": ${firstPlayerTurn},
-                "armyType": "${gameRoom.firstPlayerArmyName}"
+                "yourArmy": "${gameRoom.firstPlayerArmyName}",
+                "enemyArmy": "${gameRoom.secondPlayerArmyName}"
         }`;
 
         const startGameSecondPlayer = `{
@@ -125,7 +126,8 @@ const _helper = {
                 "roomID":"${gameRoom.id}",
                 "type": "${this.SECOND_PLAYER_TYPE}",
                 "yourTurn": ${!firstPlayerTurn},
-                "armyType": "${gameRoom.secondPlayerArmyName}"
+                "yourArmy": "${gameRoom.secondPlayerArmyName}",
+                "enemyArmy": "${gameRoom.firstPlayerArmyName}"
         }`;
 
         gameRoom.firstClient.ctx.send(startGameFirstPlayer);
