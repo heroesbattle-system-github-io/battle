@@ -168,3 +168,53 @@ body {
     -webkit-user-select: none;
     -ms-user-select: none;
 }
+
+.load-overflow {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    z-index: 99999;
+    visibility: visible;
+    opacity: 1;
+    background-image: url("../assets/fog.png");
+    background-repeat: repeat;
+    transition: all .5s linear;
+}
+
+.load-overflow.fadeOut {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.load-overflow .load-overflow__status-bar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url("../assets/panelbg.jpg");
+    background-repeat: repeat;
+    width: 513px;
+    height: 252px;
+    text-align: center;
+    padding: 40px 20px;
+    z-index: 9999;
+}
+
+.load-overflow .background-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 513px;
+    transform: translate(-50%, -50%);
+    height: 252px;
+    padding: 40px 20px;
+    background-image: url("../assets/Background.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: inherit;
+}
+
+.load-overflow .load-overflow__status-bar .load-overflow__status {
+    color: rgb(206, 206, 206);
+    margin: 10px 10px 10px 10px;
+}

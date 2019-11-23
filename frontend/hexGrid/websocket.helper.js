@@ -64,5 +64,10 @@ const _socketHelper = {
         setTimeout(() => {
             target.style.outline = "1px solid rgba(255, 255, 126, 0.6)"
         }, 150)
+    },
+
+    fadeOutStartGameOverflow() {
+        let waitingOverflow = document.querySelector(".wait-overflow")
+        waitingOverflow.classList.add("fadeOut");
     }
 }

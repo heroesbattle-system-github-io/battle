@@ -17,6 +17,9 @@ socket.onmessage = (msg) => {
             playerData.gameID = message["roomID"]
             playerData.playerType = message["type"]
             playerData.yourTurn = message["yourTurn"]
+
+            _socketHelper.fadeOutStartGameOverflow()
+            setUnitsOnInitialPositions(message["yourArmy"], message["enemyArmy"], playerData.playerType) 
             break;
 
         default:
