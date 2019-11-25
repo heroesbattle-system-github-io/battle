@@ -1,6 +1,24 @@
 const canvasUnits = document.getElementById("units");
 const ctx = canvasUnits.getContext('2d');
 
+const width = canvasUnits.width;
+const height = canvasUnits.height;
+
+if (window.devicePixelRatio) {
+    canvasUnits.style.width = width + 'px';
+    canvasUnits.style.height = height + 'px';
+
+    canvasUnits.width = width * window.devicePixelRatio;
+    canvasUnits.height = height * window.devicePixelRatio;
+
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+}
+
+ctx.fillStyle = "transparent";
+    ctx.fillRect(0, 0, width, height);
+    ctx.translate(width / 2, height / 2);
+
+
 const ARMY_TYPE_INFERNO = "inferno",
     ARMY_TYPE_NECROPOLIS = "necropolis",
     ARMY_TYPE_DANGEON = "dangeon",
@@ -30,7 +48,7 @@ function drawUnits(armyData) {
             img.onload = function () {
                 ctx.drawImage(
                     img,
-                    unitPositions[i].position.x, unitPositions[i].position.y,
+                    unitPositions[i].x, unitPositions[i].y,
                     picSizes[i].size.width, picSizes[i].size.height
                 )
 
@@ -86,7 +104,8 @@ function findOutArmyByArmyType(armyType, playerType) {
 }
 
 function animateUnitWalk(animationData, stableMovePath, dynamicMovePath) {
-    let enemyType
+    console.log(stableMovePath)
+    let enemyType = FIRST_PLAYER
     if (animationData.playerType === FIRST_PLAYER) enemyType = SECOND_PLAYER;
 
     const yourArmyData = findOutArmyByArmyType(animationData.yourArmy, animationData.playerType),
@@ -101,7 +120,7 @@ function animateUnitWalk(animationData, stableMovePath, dynamicMovePath) {
             animateUnitWalk(animationData, stableMovePath, dynamicMovePath)
         })
 
-        ctx.clearRect(0, 0, canvasUnits.width, canvasUnits.height);
+        ctx.clearRect(-canvasUnits.width / 2, -canvasUnits.height / 2, canvasUnits.width, canvasUnits.height);
 
         let drawUnits = { ...enemyArmyData };
         if (isEnemyUnit) drawUnits = { ...yourArmyData }
@@ -115,70 +134,60 @@ function animateUnitWalk(animationData, stableMovePath, dynamicMovePath) {
 
             ctx.drawImage(
                 img,
-                drawUnits.unitPositions[i].position.x, drawUnits.unitPositions[i].position.y,
+                drawUnits.unitPositions[i].x, drawUnits.unitPositions[i].y,
                 drawUnits.picSizes[i].size.width, drawUnits.picSizes[i].size.height
             )
         }
 
         for (let i = 0; i < specDrawData.armyPics.length; i++) {
             if (i === Number(animationData.unitId)) continue;
-            
+
             let img = new Image();
             img.src = specDrawData.armyPics[i].src;
 
             ctx.drawImage(
                 img,
-                specDrawData.unitPositions[i].position.x, specDrawData.unitPositions[i].position.y,
+                specDrawData.unitPositions[i].x, specDrawData.unitPositions[i].y,
                 specDrawData.picSizes[i].size.width, specDrawData.picSizes[i].size.height
             )
         }
 
-        stableMovePath.shift();
-    }
-    else cancelAnimationFrame(requestFrameId)
-}
+        let img = new Image();
+        img.src = specDrawData.armyPics[animationData.unitId].src;
 
-function animate(unitID, map, stateMap) {
-    let id;
-    if (map.length !== 0) {
-        id = requestAnimationFrame(() => {
-            animate(unitID, map, stateMap);
-        });
-
-        ctx.clearRect(0, 0, canvasUnits.width, canvasUnits.height);
-
-        let src = unitSecondSrc
-        if (unitID <= 5) src = unitFirstSrc
         ctx.drawImage(
-            src,
-            _unitHelper.INIT_UNITS_IMG[unitID].position.x + stateMap[0].x,
-            _unitHelper.INIT_UNITS_IMG[unitID].position.y + stateMap[0].y,
-            _unitHelper.INIT_UNITS_IMG[unitID].size.width,
-            _unitHelper.INIT_UNITS_IMG[unitID].size.height
+            img,
+            specDrawData.unitPositions[animationData.unitId].x + dynamicMovePath[0].x,
+            specDrawData.unitPositions[animationData.unitId].y + dynamicMovePath[0].y,
+            specDrawData.picSizes[animationData.unitId].size.width,
+            specDrawData.picSizes[animationData.unitId].size.height
         )
 
-        for (let i = 0; i < _unitHelper.INIT_UNITS_IMG.length; i++) {
-            if (i === unitID) continue;
-
-            let src = unitSecondSrc
-            if (i <= 5) src = unitFirstSrc
-
-            ctx.drawImage(
-                src,
-                _unitHelper.INIT_UNITS_IMG[i].position.x,
-                _unitHelper.INIT_UNITS_IMG[i].position.y,
-                _unitHelper.INIT_UNITS_IMG[i].size.width,
-                _unitHelper.INIT_UNITS_IMG[i].size.height
-            )
+        if (stableMovePath[1] === undefined) {
+            cancelAnimationFrame(requestFrameId);
+            return;
         }
+        
+        dynamicMovePath[0].x += ((stableMovePath[1].x - stableMovePath[0].x) / 40);
+        dynamicMovePath[0].y += ((stableMovePath[1].y - stableMovePath[0].y) / 40);
 
-        stateMap[0].x += 2;
-        stateMap[0].y += 0.5;
-        if (stateMap[0].x === map[0].x) {
-            map.shift();
-            stateMap.shift();
+        if (Math.abs(dynamicMovePath[0].x) > Math.abs(stableMovePath[0].x - stableMovePath[1].x)) {
+            if (playerData.playerType === FIRST_PLAYER) {
+                _unitHelper.FIRST_PLAYER_UNIT_POSTION[animationData.unitId].x =
+                    specDrawData.unitPositions[animationData.unitId].x + dynamicMovePath[0].x
+
+                _unitHelper.FIRST_PLAYER_UNIT_POSTION[animationData.unitId].y =
+                    specDrawData.unitPositions[animationData.unitId].y + dynamicMovePath[0].y
+            } else {
+                _unitHelper.SECOND_PLAYER_UNIT_POSTION[animationData.unitId].x =
+                    specDrawData.unitPositions[animationData.unitId].x + dynamicMovePath[0].x
+
+                _unitHelper.SECOND_PLAYER_UNIT_POSTION[animationData.unitId].y =
+                    specDrawData.unitPositions[animationData.unitId].y + dynamicMovePath[0].y
+            }
+            stableMovePath.shift();
+            dynamicMovePath.shift();
         }
-    } else {
-        cancelAnimationFrame(id);
     }
+    else cancelAnimationFrame(requestFrameId)
 }

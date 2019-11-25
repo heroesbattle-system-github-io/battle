@@ -54,9 +54,13 @@ socket.onmessage = (msg) => {
                 yourArmy: playerData.yourArmy,
                 enemyArmy: playerData.enemyArmy
             }
-            let dynamicMovePath = [...message["movePath"]],
-                stableMovePath = [...message["movePath"]];
+            let stableMovePath = [...message["movePath"]];
 
+            let dynamicMovePath = [];
+            for (let i = 0; i < stableMovePath.length; i++) {
+                dynamicMovePath.push(new Point(0, 0))
+            }
+            
             animateUnitWalk(animationData, stableMovePath, dynamicMovePath)
 
             break;

@@ -244,13 +244,13 @@ function setOnClickEvent(playerData, unitData, hexes) {
         })
 
         const animationPath = []
-        for (const hex of path) {
-            if (hex === undefined || hex === null) break;
-            animationPath.push(layout.hexToPixel(hex))
+        for (let i = path.length - 1; i >= 0; i--) {
+            if (path[i] === undefined || path[i] === null) continue;
+            animationPath.push(layout.hexToPixel(path[i]))
         }
 
-        let dynamicAnimationPath = [...animationPath];
-
+        console.log(animationPath);
+        console.log(path)
         socket.send(`{
             "message":"unit move",
             "gameRoomID": ${playerData.gameID},

@@ -1,4 +1,4 @@
-const _unitHelper = {
+let _unitHelper = {
     INFERNO_UNITS_SIZE: [
         { "size": { "width": 76, "height": 140 } },
         { "size": { "width": 76, "height": 140 } },
@@ -136,6 +136,9 @@ const _unitHelper = {
         { "position": { "x": 880, "y": 225 } },
         { "position": { "x": 880, "y": 330 } },
         { "position": { "x": 880, "y": 435 } },
-        { "position": { "x": 850, "y": 500 } }
+        { "position": { "x": 60 - 100, "y": -130 } }
     ],
 }
+
+_unitHelper.FIRST_PLAYER_UNIT_POSTION = [...firstPlayerPositions]
+_unitHelper.SECOND_PLAYER_UNIT_POSTION = [...secondPlayerPositions]
