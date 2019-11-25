@@ -1,56 +1,4 @@
-function drawGrid(drawParams, hexes, point) {
-    const { id, backgroundColor, withLabels, layout } = drawParams;
-
-    const canvas = document.getElementById(id);
-    const ctx = canvas.getContext('2d');
-
-    const width = canvas.width;
-    const height = canvas.height;
-
-    if (window.devicePixelRatio) {
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-
-        canvas.width = width * window.devicePixelRatio;
-        canvas.height = height * window.devicePixelRatio;
-
-        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    }
-
-    if (hexes === undefined)
-        hexes = shapeRectangle(15, 11, permuteQRS);
-
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, width, height);
-    ctx.translate(width / 2, height / 2);
-
-    if (point === undefined)
-        point = _helper.NON_EXISTING_POINT
-
-    let activeHex = new Hex(-6, -2, 8);
-
-    let obstackles = [
-        new Hex(0, -2, 2),
-        new Hex(-1, -1, 2),
-        new Hex(-2, 0, 2),
-        new Hex(0, -1, 1),
-        new Hex(-3, 1, 2),
-        new Hex(1, -3, 2)
-    ]
-
-    const movementRange = 10;
-
-    hexes.forEach(hex => {
-        drawHex(ctx, layout, hex);
-        if (withLabels) drawHexLabel(ctx, layout, hex);
-    });
-
-    drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point);
-
-    return hexes
-}
-
-function drawActiveUnitHex(playerData, moveRange, unitNumber, point) {
+function drawActiveUnitHex(playerData, unitData, hexes, point) {
     const layout = new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0));
 
     const canvas = document.getElementById("hexagon-grid");
@@ -69,7 +17,8 @@ function drawActiveUnitHex(playerData, moveRange, unitNumber, point) {
         ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
-    let hexes = shapeRectangle(15, 11, permuteQRS);
+    if (hexes === undefined)
+        hexes = shapeRectangle(15, 11, permuteQRS);
 
     ctx.fillStyle = "transparent";
     ctx.fillRect(0, 0, width, height);
@@ -80,40 +29,46 @@ function drawActiveUnitHex(playerData, moveRange, unitNumber, point) {
 
     let activeHex
     if (playerData.yourTurn === true)
-        activeHex = playerData.yourUnitsPosition[unitNumber]
+        activeHex = playerData.yourUnitsPosition[unitData.unitNumber]
     else
-        activeHex = playerData.enemyUnitsPostion[unitNumber]
-
-    let obstackles = [
-        new Hex(0, -2, 2),
-        new Hex(-1, -1, 2),
-        new Hex(-2, 0, 2),
-        new Hex(0, -1, 1),
-        new Hex(-3, 1, 2),
-        new Hex(1, -3, 2)
-    ]
-
-    const movementRange = moveRange;
+        activeHex = playerData.enemyUnitsPostion[unitData.unitNumber]
 
     hexes.forEach(hex => {
         drawHex(ctx, layout, hex);
         drawHexLabel(ctx, layout, hex);
     });
 
-    drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point);
+    const canvasData = {
+        ctx: ctx,
+        layout: layout
+    }
+    const hexData = {
+        yourUnits: [...playerData.yourUnitsPosition],
+        activeHex: activeHex,
+        obstackles: [new Hex(0, -2, 2), new Hex(-1, -1, 2), new Hex(-2, 0, 2), new Hex(0, -1, 1), new Hex(-3, 1, 2), new Hex(1, -3, 2)],
+        movementRange: unitData.moveRange,
+        point: point
+    }
+
+    if (playerData.yourTurn === true)
+        drawActiveHexes(canvasData, hexData);
 
     return hexes
 }
 
-function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point) {
-    let reachable = layout.getReachableHex(activeHex, movementRange, obstackles);
+function drawActiveHexes(canvasData, hexData) {
+    let { ctx, layout } = canvasData;
+    let { yourUnits, activeHex, obstackles, movementRange, point } = hexData;
+
+    let reachable = layout.getReachableHex(activeHex, movementRange, obstackles, yourUnits);
     let results = [];
 
     for (let i = 0; i < reachable.length; i++) {
         results.push(...reachable[i])
     }
     reachable = [...results];
-    results.push(...obstackles)
+    results.push(...obstackles);
+    results.push(...yourUnits);
 
     results.forEach(hex => {
         const corners = layout.polygonCorners(hex);
@@ -130,6 +85,20 @@ function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, poin
 
         if (layout.insideHex(point, corners))
             ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
+
+        yourUnits.forEach(friendUnit => {
+            if (hex.q === friendUnit.q &&
+                hex.r === friendUnit.r &&
+                hex.s === friendUnit.s
+            ) ctx.fillStyle = "transparent";
+        });
+
+        obstackles.forEach(obstacle => {
+            if (hex.q === obstacle.q &&
+                hex.r === obstacle.r &&
+                hex.s === obstacle.s
+            ) ctx.fillStyle = "red";
+        });
 
         obstackles.forEach(obstacle => {
             if (hex.q === obstacle.q &&
@@ -213,11 +182,7 @@ function shapeRectangle(w, h, constructor) {
     return hexes;
 }
 
-// let hexes = drawGrid(_helper.INITIAL_CANVAS_DRAW_PARAMS);
-
-// setOnHoverEvent(hexes);
-
-function setOnHoverEvent(hexes) {
+function setOnHoverEvent(playerData, unitData, hexes) {
     const canvas = document.querySelector("canvas");
     const ctx = canvas.getContext('2d');
 
@@ -229,11 +194,7 @@ function setOnHoverEvent(hexes) {
 
         ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
-        drawGrid(
-            _helper.INITIAL_CANVAS_DRAW_PARAMS,
-            hexes,
-            new Point(x, y)
-        );
+        drawActiveUnitHex(playerData, unitData, hexes, new Point(x, y));
     })
 }
 

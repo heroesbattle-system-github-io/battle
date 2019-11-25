@@ -173,7 +173,7 @@ class Layout {
         return results
     }
 
-    getReachableHex(activeHex, movement, obstackles) {
+    getReachableHex(activeHex, movement, obstackles, friendlyUnits) {
         let fringes = [],
             cost_so_far = {},
             came_from = {};
@@ -190,6 +190,7 @@ class Layout {
                     let neighbor = hex.neighbor(j)
                     if (
                         !this.isObstacle(neighbor, obstackles) &&
+                        !this.isObstacle(neighbor, friendlyUnits) &&
                         cost_so_far[neighbor] === undefined &&
                         !this.isOutsideBorders(neighbor)
                     ) {

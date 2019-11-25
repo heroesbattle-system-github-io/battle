@@ -29,7 +29,12 @@ socket.onmessage = (msg) => {
 
             break;
         case "set active unit":
-            drawActiveUnitHex(playerData, message["moveRange"], message["unitNumber"])
+            let unitData = {
+                moveRange: message["moveRange"],
+                unitNumber: message["unitNumber"]
+            }
+            let hexes = drawActiveUnitHex(playerData, unitData);
+            setOnHoverEvent(playerData, unitData, hexes);
         default:
             break;
     }
