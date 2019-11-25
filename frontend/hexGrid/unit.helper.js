@@ -123,6 +123,46 @@ const _unitHelper = {
         }
     ],
 
+    INFERNO_REVERSED_PICS: [
+        { "src": "./Units/DarkPriestInfernoRev.png", },
+        { "src": "./Units/DarkPriestInfernoRev.png", },
+        { "src": "./Units/DarkPriestInfernoRev.png", },
+        { "src": "./Units/DarkPriestInfernoRev.png", },
+        { "src": "./Units/DarkPriestInfernoRev.png", },
+        { "src": "./Units/DarkPriestInfernoRev.png", },
+        { "src": "./Units/DarkPriestInfernoRev.png", }
+    ],
+
+    HAVEN_REVERSED_PICS: [
+        { "src": "./Units/DarkPriestHavenRev.png", },
+        { "src": "./Units/DarkPriestHavenRev.png", },
+        { "src": "./Units/DarkPriestHavenRev.png", },
+        { "src": "./Units/DarkPriestHavenRev.png", },
+        { "src": "./Units/DarkPriestHavenRev.png", },
+        { "src": "./Units/DarkPriestHavenRev.png", },
+        { "src": "./Units/DarkPriestHavenRev.png", }
+    ],
+
+    DANGEON_REVERSED_PICS: [
+        { "src": "./Units/DarkPriestDangeonRev.png", },
+        { "src": "./Units/DarkPriestDangeonRev.png", },
+        { "src": "./Units/DarkPriestDangeonRev.png", },
+        { "src": "./Units/DarkPriestDangeonRev.png", },
+        { "src": "./Units/DarkPriestDangeonRev.png", },
+        { "src": "./Units/DarkPriestDangeonRev.png", },
+        { "src": "./Units/DarkPriestDangeonRev.png", }
+    ],
+
+    NECROPOLIS_REVERSED_PICS: [
+        { "src": "./Units/DarkPriestNecropolisRev.png", },
+        { "src": "./Units/DarkPriestNecropolisRev.png", },
+        { "src": "./Units/DarkPriestNecropolisRev.png", },
+        { "src": "./Units/DarkPriestNecropolisRev.png", },
+        { "src": "./Units/DarkPriestNecropolisRev.png", },
+        { "src": "./Units/DarkPriestNecropolisRev.png", },
+        { "src": "./Units/DarkPriestNecropolisRev.png", }
+    ],
+
     FIRST_PLAYER_UNIT_POSTION: [
         { "position": { "x": 45, "y": 20 } },
         { "position": { "x": 45, "y": 120 } },

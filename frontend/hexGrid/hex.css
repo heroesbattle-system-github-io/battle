@@ -35,7 +35,7 @@ body {
     z-index: 99999;
     visibility: visible;
     opacity: 1;
-    background-image: url("../assets/fog.png");
+    background: rgb(0, 0, 0) url("../assets/fog.png");
     background-repeat: repeat;
     transition: all .5s linear;
 }
