@@ -5,7 +5,9 @@ let playerData = {
     yourTurn: false,
     playerType: "",
     yourUnitsPosition: [],
-    enemyUnitsPostion: []
+    enemyUnitsPostion: [],
+    yourArmy: [],
+    enemyArmy: []
 }
 
 _socketHelper.chooseArmyEvent(_socketHelper.SELECTED_ARMY_CLASS);
@@ -19,9 +21,15 @@ socket.onmessage = (msg) => {
             playerData.gameID = message["roomID"]
             playerData.playerType = message["type"]
             playerData.yourTurn = message["yourTurn"]
+            playerData.yourArmy = message["yourArmy"]
+            playerData.enemyArmy = message["enemyArmy"]
 
             _socketHelper.fadeOutStartGameOverflow()
-            setUnitsOnInitialPositions(message["yourArmy"], message["enemyArmy"], playerData.playerType)
+            setUnitsOnInitialPositions(
+                playerData.yourArmy,
+                playerData.enemyArmy,
+                playerData.playerType
+            )
 
             const data = findFriendAndEnemyUnits(playerData.playerType)
             playerData.yourUnitsPosition = [...data.friendlyUnits];
@@ -35,7 +43,23 @@ socket.onmessage = (msg) => {
             }
             let hexes = drawActiveUnitHex(playerData, unitData);
             setOnHoverEvent(playerData, unitData, hexes);
-            setOnClickEvent(playerData, unitData, hexes)
+            setOnClickEvent(playerData, unitData, hexes);
+
+            break;
+        case "unit move":
+            let animationData = {
+                playerTypeUnit: message["playerType"],
+                playerType: playerData.playerType,
+                unitId: message["unitId"],
+                yourArmy: playerData.yourArmy,
+                enemyArmy: playerData.enemyArmy
+            }
+            let dynamicMovePath = [...message["movePath"]],
+                stableMovePath = [...message["movePath"]];
+
+            animateUnitWalk(animationData, stableMovePath, dynamicMovePath)
+
+            break;
         default:
             break;
     }

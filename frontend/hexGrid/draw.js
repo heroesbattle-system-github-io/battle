@@ -232,6 +232,8 @@ function setOnClickEvent(playerData, unitData, hexes) {
             const corners = layout.polygonCorners(hex);
 
             if (layout.insideHex(point, corners)) {
+                path.push(hex);
+
                 let temp = hex.toString();
 
                 for (let i = 0; i < movementRange; i++) {
@@ -240,8 +242,21 @@ function setOnClickEvent(playerData, unitData, hexes) {
                 }
             }
         })
-        console.log(path)
 
-        // ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+        const animationPath = []
+        for (const hex of path) {
+            if (hex === undefined || hex === null) break;
+            animationPath.push(layout.hexToPixel(hex))
+        }
+
+        let dynamicAnimationPath = [...animationPath];
+
+        socket.send(`{
+            "message":"unit move",
+            "gameRoomID": ${playerData.gameID},
+            "unitId":"${unitData.unitNumber}",
+            "playerType":"${playerData.playerType}",
+            "movePath": ${JSON.stringify(animationPath)}
+        }`);
     })
 }

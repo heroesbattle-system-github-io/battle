@@ -85,25 +85,58 @@ function findOutArmyByArmyType(armyType, playerType) {
     return { armyPics: armyPics, picSizes: picSizes, unitPositions: unitPositions }
 }
 
-// setUnitsOnInitialPositions(_unitHelper.INIT_UNITS_IMG, armyType, enemyArmyType);
+function animateUnitWalk(animationData, stableMovePath, dynamicMovePath) {
+    let enemyType
+    if (animationData.playerType === FIRST_PLAYER) enemyType = SECOND_PLAYER;
 
-// let unitFirstSrc = new Image();
-// unitFirstSrc.src = _unitHelper.INIT_UNITS_IMG[1].src;
+    const yourArmyData = findOutArmyByArmyType(animationData.yourArmy, animationData.playerType),
+        enemyArmyData = findOutArmyByArmyType(animationData.enemyArmy, enemyType);
 
-// let unitSecondSrc = new Image();
-// unitSecondSrc.src = _unitHelper.INIT_UNITS_IMG[6].src;
+    let isEnemyUnit = true;
+    if (animationData.playerTypeUnit === animationData.playerType) isEnemyUnit = false;
 
-// let x = 0, y = 0;
+    let requestFrameId;
+    if (stableMovePath.length !== 0) {
+        requestFrameId = requestAnimationFrame(() => {
+            animateUnitWalk(animationData, stableMovePath, dynamicMovePath)
+        })
 
-// let map = [
-//     { "x": 200, "y": 50 },
-//     { "x": 30, "y": 30 },
-// ];
+        ctx.clearRect(0, 0, canvasUnits.width, canvasUnits.height);
 
-// let stateMap = [
-//     { "x": 0, "y": 0 },
-//     { "x": 0, "y": 0 },
-// ];
+        let drawUnits = { ...enemyArmyData };
+        if (isEnemyUnit) drawUnits = { ...yourArmyData }
+
+        let specDrawData = { ...yourArmyData };
+        if (isEnemyUnit) specDrawData = { ...enemyArmyData }
+
+        for (let i = 0; i < drawUnits.armyPics.length; i++) {
+            let img = new Image();
+            img.src = drawUnits.armyPics[i].src;
+
+            ctx.drawImage(
+                img,
+                drawUnits.unitPositions[i].position.x, drawUnits.unitPositions[i].position.y,
+                drawUnits.picSizes[i].size.width, drawUnits.picSizes[i].size.height
+            )
+        }
+
+        for (let i = 0; i < specDrawData.armyPics.length; i++) {
+            if (i === Number(animationData.unitId)) continue;
+            
+            let img = new Image();
+            img.src = specDrawData.armyPics[i].src;
+
+            ctx.drawImage(
+                img,
+                specDrawData.unitPositions[i].position.x, specDrawData.unitPositions[i].position.y,
+                specDrawData.picSizes[i].size.width, specDrawData.picSizes[i].size.height
+            )
+        }
+
+        stableMovePath.shift();
+    }
+    else cancelAnimationFrame(requestFrameId)
+}
 
 function animate(unitID, map, stateMap) {
     let id;
@@ -149,5 +182,3 @@ function animate(unitID, map, stateMap) {
         cancelAnimationFrame(id);
     }
 }
-
-// animate(1, map, stateMap);

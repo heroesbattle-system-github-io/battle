@@ -29,6 +29,14 @@ webSocketServer.on('connection', function (ws) {
 
         break;
 
+      case _helper.WEBSOCKET_MSG_UNIT_MOVE:
+        for (let i = 0; i < gameRooms.length; i++) {
+          if (gameRooms[i].id === msgData.gameRoomID) {
+            _helper.sendSocketMessageToPlayers(gameRooms[i], JSON.stringify(msgData))
+          }
+        }
+
+        break;
       default:
         break;
     }

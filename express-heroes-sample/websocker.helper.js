@@ -20,6 +20,7 @@ const _helper = {
     END_TURN_MESSAGE: "End Turn",
     ATTACK_MONSTER_MESSAGE: "attackMonster",
     WEBSOCKET_MSG_SEND_ARMY_TYPE: "send army",
+    WEBSOCKET_MSG_UNIT_MOVE: "unit move",
 
     ARMY_TYPE_INFERNO: "inferno",
     ARMY_TYPE_NECROPOLIS: "necropolis",
