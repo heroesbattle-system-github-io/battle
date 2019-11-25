@@ -35,6 +35,7 @@ socket.onmessage = (msg) => {
             }
             let hexes = drawActiveUnitHex(playerData, unitData);
             setOnHoverEvent(playerData, unitData, hexes);
+            setOnClickEvent(playerData, unitData, hexes)
         default:
             break;
     }

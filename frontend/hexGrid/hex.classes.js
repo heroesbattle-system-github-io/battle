@@ -202,7 +202,7 @@ class Layout {
             });
         }
 
-        return fringes;
+        return { fringes: fringes, came_from: came_from };
     }
 
     isObstacle(hex, obstackles) {

@@ -60,7 +60,8 @@ function drawActiveHexes(canvasData, hexData) {
     let { ctx, layout } = canvasData;
     let { yourUnits, activeHex, obstackles, movementRange, point } = hexData;
 
-    let reachable = layout.getReachableHex(activeHex, movementRange, obstackles, yourUnits);
+    let data = layout.getReachableHex(activeHex, movementRange, obstackles, yourUnits);
+    let reachable = [...data.fringes];
     let results = [];
 
     for (let i = 0; i < reachable.length; i++) {
@@ -198,9 +199,16 @@ function setOnHoverEvent(playerData, unitData, hexes) {
     })
 }
 
-function setOnClickEvent(hexes) {
-    const canvas = document.querySelector("canvas");
+function setOnClickEvent(playerData, unitData, hexes) {
+    if (playerData.yourTurn === false) return;
+
+    const canvas = document.getElementById("hexagon-grid");;
     const ctx = canvas.getContext('2d');
+    const layout = new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0));
+    const yourUnits = [...playerData.yourUnitsPosition];
+    const activeHex = playerData.yourUnitsPosition[unitData.unitNumber]
+    const obstackles = [new Hex(0, -2, 2), new Hex(-1, -1, 2), new Hex(-2, 0, 2), new Hex(0, -1, 1), new Hex(-3, 1, 2), new Hex(1, -3, 2)]
+    const movementRange = unitData.moveRange;
 
     canvas.addEventListener("click", e => {
         let rect = e.target.getBoundingClientRect(),
@@ -208,12 +216,32 @@ function setOnClickEvent(hexes) {
             y = e.clientY - rect.top - canvas.height / 2,
             i = 0, r;
 
-        ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+        let data = layout.getReachableHex(activeHex, movementRange, obstackles, yourUnits);
+        let reachable = [...data.fringes];
+        let map = data.came_from;
 
-        drawGrid(
-            _helper.INITIAL_CANVAS_DRAW_PARAMS,
-            hexes,
-            new Point(x, y)
-        );
+        let point = new Point(x, y);
+        let results = [];
+
+        for (let i = 0; i < reachable.length; i++) {
+            results.push(...reachable[i])
+        }
+
+        let path = [];
+        results.forEach(hex => {
+            const corners = layout.polygonCorners(hex);
+
+            if (layout.insideHex(point, corners)) {
+                let temp = hex.toString();
+
+                for (let i = 0; i < movementRange; i++) {
+                    temp = map[temp]
+                    path.push(temp);
+                }
+            }
+        })
+        console.log(path)
+
+        // ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
     })
 }
