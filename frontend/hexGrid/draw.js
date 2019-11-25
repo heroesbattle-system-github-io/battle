@@ -50,6 +50,61 @@ function drawGrid(drawParams, hexes, point) {
     return hexes
 }
 
+function drawActiveUnitHex(playerData, moveRange, unitNumber, point) {
+    const layout = new Layout(Layout.pointy, new Point(35, 35), new Point(0, 0));
+
+    const canvas = document.getElementById("hexagon-grid");
+    const ctx = canvas.getContext('2d');
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    if (window.devicePixelRatio) {
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+
+        canvas.width = width * window.devicePixelRatio;
+        canvas.height = height * window.devicePixelRatio;
+
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+
+    let hexes = shapeRectangle(15, 11, permuteQRS);
+
+    ctx.fillStyle = "transparent";
+    ctx.fillRect(0, 0, width, height);
+    ctx.translate(width / 2, height / 2);
+
+    if (point === undefined)
+        point = _helper.NON_EXISTING_POINT
+
+    let activeHex
+    if (playerData.yourTurn === true)
+        activeHex = playerData.yourUnitsPosition[unitNumber]
+    else
+        activeHex = playerData.enemyUnitsPostion[unitNumber]
+
+    let obstackles = [
+        new Hex(0, -2, 2),
+        new Hex(-1, -1, 2),
+        new Hex(-2, 0, 2),
+        new Hex(0, -1, 1),
+        new Hex(-3, 1, 2),
+        new Hex(1, -3, 2)
+    ]
+
+    const movementRange = moveRange;
+
+    hexes.forEach(hex => {
+        drawHex(ctx, layout, hex);
+        drawHexLabel(ctx, layout, hex);
+    });
+
+    drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point);
+
+    return hexes
+}
+
 function drawActiveHexes(ctx, layout, activeHex, obstackles, movementRange, point) {
     let reachable = layout.getReachableHex(activeHex, movementRange, obstackles);
     let results = [];
@@ -158,9 +213,9 @@ function shapeRectangle(w, h, constructor) {
     return hexes;
 }
 
-let hexes = drawGrid(_helper.INITIAL_CANVAS_DRAW_PARAMS);
+// let hexes = drawGrid(_helper.INITIAL_CANVAS_DRAW_PARAMS);
 
-setOnHoverEvent(hexes);
+// setOnHoverEvent(hexes);
 
 function setOnHoverEvent(hexes) {
     const canvas = document.querySelector("canvas");

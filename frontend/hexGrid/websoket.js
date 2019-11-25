@@ -3,7 +3,9 @@ const socket = new WebSocket("ws://localhost:4451/");
 let playerData = {
     gameID: -1,
     yourTurn: false,
-    playerType: ""
+    playerType: "",
+    yourUnitsPosition: [],
+    enemyUnitsPostion: []
 }
 
 _socketHelper.chooseArmyEvent(_socketHelper.SELECTED_ARMY_CLASS);
@@ -19,9 +21,15 @@ socket.onmessage = (msg) => {
             playerData.yourTurn = message["yourTurn"]
 
             _socketHelper.fadeOutStartGameOverflow()
-            setUnitsOnInitialPositions(message["yourArmy"], message["enemyArmy"], playerData.playerType) 
-            break;
+            setUnitsOnInitialPositions(message["yourArmy"], message["enemyArmy"], playerData.playerType)
 
+            const data = findFriendAndEnemyUnits(playerData.playerType)
+            playerData.yourUnitsPosition = [...data.friendlyUnits];
+            playerData.enemyUnitsPostion = [...data.enemyUnits];
+
+            break;
+        case "set active unit":
+            drawActiveUnitHex(playerData, message["moveRange"], message["unitNumber"])
         default:
             break;
     }

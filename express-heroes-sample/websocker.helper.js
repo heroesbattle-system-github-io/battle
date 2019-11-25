@@ -171,7 +171,8 @@ const _helper = {
 
         const setActiveUnit = `{
                     "message":"set active unit", 
-                    "unitNumber":${unitMoveId}
+                    "unitNumber":${unitMoveId},
+                    "moveRange": ${gameRoom[armyKey][unitKey].speed}
         }`;
 
         this.sendSocketMessageToPlayers(gameRoom, setActiveUnit)
