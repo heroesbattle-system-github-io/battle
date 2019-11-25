@@ -148,41 +148,32 @@ const _helper = {
     },
 
     setUnitMovingOrder(gameRoom) {
-        let maxInitiative, unitKey
-        if (gameRoom.turn === this.SECOND_PLAYER_TURN) {
-            let unitData = this.findMaxInitiativeUnit(gameRoom.unitOrderSecond);
+        let armyKey = "unitOrderFirst"
+        if (gameRoom.turn === this.SECOND_PLAYER_TURN)
+            armyKey = "unitOrderSecond"
+
+        let unitData = this.findMaxInitiativeUnit(gameRoom[armyKey]),
+            maxInitiative = unitData.maxInitiative,
+            unitKey = unitData.unitKey;
+
+        if (maxInitiative === 0) {
+            for (const key in gameRoom[armyKey])
+                gameRoom[armyKey][key].walked = false;
+
+            unitData = this.findMaxInitiativeUnit(gameRoom[armyKey]);
             maxInitiative = unitData.maxInitiative;
             unitKey = unitData.unitKey
-
-            if (maxInitiative === 0) {
-                for (const key in gameRoom.unitOrderSecond)
-                    gameRoom.unitOrderSecond[key].was = false;
-
-                unitData = this.findMaxInitiativeUnit(gameRoom.unitOrderSecond);
-                maxInitiative = unitData.maxInitiative;
-                unitKey = unitData.unitKey
-            }
-            gameRoom.unitOrderSecond[unitKey].was = true
         }
-        else if (gameRoom.turn === this.FIRST_PLAYER_TURN) {
-            let unitData = this.findMaxInitiativeUnit(gameRoom.unitOrderFirst);
-            maxInitiative = unitData.maxInitiative;
-            unitKey = unitData.unitKey
 
-            if (maxInitiative === 0) {
-                for (const key in gameRoom.unitOrderFirst)
-                    gameRoom.unitOrderFirst[key].was = false;
-
-                unitData = this.findMaxInitiativeUnit(gameRoom.unitOrderFirst);
-                maxInitiative = unitData.maxInitiative;
-                unitKey = unitData.unitKey
-            }
-            gameRoom.unitOrderFirst[unitKey].was = true
-        }
+        gameRoom[armyKey][unitKey].walked = true
 
         let unitMoveId = unitKey[unitKey.length - 1]
 
-        const setActiveUnit = `{"message":"set active unit", "unitNumber":${unitMoveId}}`;
+        const setActiveUnit = `{
+                    "message":"set active unit", 
+                    "unitNumber":${unitMoveId}
+        }`;
+
         this.sendSocketMessageToPlayers(gameRoom, setActiveUnit)
 
         return gameRoom
@@ -190,9 +181,10 @@ const _helper = {
 
     findMaxInitiativeUnit(unitsOrder) {
         let maxInitiative = 0, unitKey;
+
         for (const key in unitsOrder) {
             if (unitsOrder[key].initiative > maxInitiative &&
-                unitsOrder[key].was !== true &&
+                unitsOrder[key].walked !== true &&
                 unitsOrder[key].isDied !== true) {
                 maxInitiative = unitsOrder[key].initiative;
                 unitKey = key
