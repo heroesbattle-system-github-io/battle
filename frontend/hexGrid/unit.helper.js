@@ -1,126 +1,82 @@
 const _unitHelper = {
-    INFERNO_UNITS_PIC: [
-        {
-            "src": "./Units/DarkPriestInferno.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestInferno.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestInferno.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestInferno.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestInferno.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestInferno.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestInferno.png",
-            "size": { "width": 76, "height": 140 }
-        }
+    INFERNO_UNITS_SIZE: [
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } }
     ],
 
-    HAVEN_UNITS_PIC: [
-        {
-            "src": "./Units/DarkPriestHaven.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestHaven.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestHaven.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestHaven.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestHaven.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestHaven.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestHaven.png",
-            "size": { "width": 76, "height": 140 }
-        }
+    HAVEN_UNITS_SIZE: [
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } }
     ],
 
-    DANGEON_UNITS_PIC: [
-        {
-            "src": "./Units/DarkPriestDangeon.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestDangeon.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestDangeon.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestDangeon.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestDangeon.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestDangeon.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestDangeon.png",
-            "size": { "width": 76, "height": 140 }
-        }
+    DANGEON_UNITS_SIZE: [
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } }
     ],
 
-    NECROPOLIS_UNITS_PIC: [
-        {
-            "src": "./Units/DarkPriestNecropolis.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestNecropolis.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestNecropolis.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestNecropolis.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestNecropolis.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestNecropolis.png",
-            "size": { "width": 76, "height": 140 }
-        },
-        {
-            "src": "./Units/DarkPriestNecropolis.png",
-            "size": { "width": 76, "height": 140 }
-        }
+    NECROPOLIS_UNITS_SIZE: [
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } },
+        { "size": { "width": 76, "height": 140 } }
+    ],
+
+    INFERNO_PICS: [
+        { "src": "./Units/DarkPriestInferno.png", },
+        { "src": "./Units/DarkPriestInferno.png", },
+        { "src": "./Units/DarkPriestInferno.png", },
+        { "src": "./Units/DarkPriestInferno.png", },
+        { "src": "./Units/DarkPriestInferno.png", },
+        { "src": "./Units/DarkPriestInferno.png", },
+        { "src": "./Units/DarkPriestInferno.png", }
+    ],
+
+    HAVEN_PICS: [
+        { "src": "./Units/DarkPriestHaven.png", },
+        { "src": "./Units/DarkPriestHaven.png", },
+        { "src": "./Units/DarkPriestHaven.png", },
+        { "src": "./Units/DarkPriestHaven.png", },
+        { "src": "./Units/DarkPriestHaven.png", },
+        { "src": "./Units/DarkPriestHaven.png", },
+        { "src": "./Units/DarkPriestHaven.png", }
+    ],
+
+    DANGEON_PICS: [
+        { "src": "./Units/DarkPriestDangeon.png", },
+        { "src": "./Units/DarkPriestDangeon.png", },
+        { "src": "./Units/DarkPriestDangeon.png", },
+        { "src": "./Units/DarkPriestDangeon.png", },
+        { "src": "./Units/DarkPriestDangeon.png", },
+        { "src": "./Units/DarkPriestDangeon.png", },
+        { "src": "./Units/DarkPriestDangeon.png", }
+    ],
+
+    NECROPOLIS_PICS: [
+        { "src": "./Units/DarkPriestNecropolis.png", },
+        { "src": "./Units/DarkPriestNecropolis.png", },
+        { "src": "./Units/DarkPriestNecropolis.png", },
+        { "src": "./Units/DarkPriestNecropolis.png", },
+        { "src": "./Units/DarkPriestNecropolis.png", },
+        { "src": "./Units/DarkPriestNecropolis.png", },
+        { "src": "./Units/DarkPriestNecropolis.png", }
     ],
 
     INFERNO_REVERSED_PICS: [

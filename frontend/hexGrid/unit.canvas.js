@@ -6,51 +6,83 @@ const ARMY_TYPE_INFERNO = "inferno",
     ARMY_TYPE_DANGEON = "dangeon",
     ARMY_TYPE_HAVEN = "haven";
 
+const FIRST_PLAYER = "first",
+    SECOND_PLAYER = "second";
+
 function setUnitsOnInitialPositions(yourArmyType, enemyArmyType, playerType) {
-    let yourArmy = findOutArmyByArmyType(yourArmyType),
-        enemyArmy = findOutArmyByArmyType(enemyArmyType);
-    if (playerType === "first") {
-        drawUnits(yourArmy, _unitHelper.FIRST_PLAYER_UNIT_POSTION);
-        drawUnits(enemyArmy, _unitHelper.SECOND_PLAYER_UNIT_POSTION)
-    } else {
-        drawUnits(yourArmy, _unitHelper.SECOND_PLAYER_UNIT_POSTION);
-        drawUnits(enemyArmy, _unitHelper.FIRST_PLAYER_UNIT_POSTION)
-    }
+    let enemyType
+    if (playerType === FIRST_PLAYER) enemyType = SECOND_PLAYER
+    const yourArmyData = findOutArmyByArmyType(yourArmyType, playerType),
+        enemyArmyData = findOutArmyByArmyType(enemyArmyType, enemyType);
+
+    drawUnits(yourArmyData);
+    drawUnits(enemyArmyData);
 }
 
-function drawUnits(pics, positions) {
-    for (let i = 0, p = Promise.resolve(); i < pics.length; i++) {
+function drawUnits(armyData) {
+    const { armyPics, picSizes, unitPositions } = armyData
+
+    for (let i = 0, p = Promise.resolve(); i < armyPics.length; i++) {
         p = p.then(_ => new Promise(resolve => {
             let img = new Image();
-            img.src = pics[i].src;
+            img.src = armyPics[i].src;
 
             img.onload = function () {
                 ctx.drawImage(
                     img,
-                    positions[i].position.x, positions[i].position.y,
-                    pics[i].size.width, pics[i].size.height
+                    unitPositions[i].position.x, unitPositions[i].position.y,
+                    picSizes[i].size.width, picSizes[i].size.height
                 )
 
-                resolve(true)
+                resolve()
             }
 
         }));
     }
 }
 
-function findOutArmyByArmyType(type) {
-    switch (type) {
-        case ARMY_TYPE_INFERNO:
-            return _unitHelper.INFERNO_UNITS_PIC
-        case ARMY_TYPE_NECROPOLIS:
-            return _unitHelper.NECROPOLIS_UNITS_PIC
-        case ARMY_TYPE_DANGEON:
-            return _unitHelper.DANGEON_UNITS_PIC
-        case ARMY_TYPE_INFERNO:
-            return _unitHelper.HAVEN_UNITS_PIC
-        default:
-            return _unitHelper.HAVEN_UNITS_PIC
+function findOutArmyByArmyType(armyType, playerType) {
+    let reversed = false,
+        unitPositions = [..._unitHelper.FIRST_PLAYER_UNIT_POSTION],
+        armyPics, picSizes;
+
+    if (playerType === SECOND_PLAYER) {
+        reversed = true
+        unitPositions = [..._unitHelper.SECOND_PLAYER_UNIT_POSTION]
     }
+
+    switch (armyType) {
+        case ARMY_TYPE_INFERNO:
+            if (reversed) armyPics = [..._unitHelper.INFERNO_REVERSED_PICS]
+            else armyPics = [..._unitHelper.INFERNO_PICS]
+            picSizes = [..._unitHelper.INFERNO_UNITS_SIZE]
+            break;
+
+        case ARMY_TYPE_NECROPOLIS:
+            if (reversed) armyPics = [..._unitHelper.NECROPOLIS_REVERSED_PICS]
+            else armyPics = [..._unitHelper.NECROPOLIS_PICS]
+            picSizes = [..._unitHelper.NECROPOLIS_UNITS_SIZE]
+            break;
+
+        case ARMY_TYPE_DANGEON:
+            if (reversed) armyPics = [..._unitHelper.DANGEON_REVERSED_PICS]
+            else armyPics = [..._unitHelper.DANGEON_PICS]
+            picSizes = [..._unitHelper.DANGEON_UNITS_SIZE]
+            break;
+
+        case ARMY_TYPE_HAVEN:
+            if (reversed) armyPics = [..._unitHelper.HAVEN_REVERSED_PICS]
+            else armyPics = [..._unitHelper.HAVEN_PICS]
+            picSizes = [..._unitHelper.HAVEN_UNITS_SIZE]
+            break;
+
+        default:
+            armyPics = [..._unitHelper.HAVEN_PICS]
+            picSizes = [..._unitHelper.HAVEN_UNITS_SIZE]
+            break;
+    }
+
+    return { armyPics: armyPics, picSizes: picSizes, unitPositions: unitPositions }
 }
 
 // setUnitsOnInitialPositions(_unitHelper.INIT_UNITS_IMG, armyType, enemyArmyType);
