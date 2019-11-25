@@ -136,6 +136,6 @@ const _unitHelper = {
         { "position": { "x": 880, "y": 225 } },
         { "position": { "x": 880, "y": 330 } },
         { "position": { "x": 880, "y": 435 } },
-        { "position": { "x": 850, "y": 435 } }
+        { "position": { "x": 850, "y": 500 } }
     ],
 }
