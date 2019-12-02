@@ -17,7 +17,7 @@ const _helper = {
     PLAYER_FIRST_TYPE_JSON: '{"message":"player type", "type":"first"}',
     PLAYER_SECOND_TYPE_JSON: '{"message":"player type", "type":"second"}',
 
-    END_TURN_MESSAGE: "End Turn",
+    WEBSOCKET_MSG_END_TURN: "End Turn",
     ATTACK_MONSTER_MESSAGE: "attackMonster",
     WEBSOCKET_MSG_SEND_ARMY_TYPE: "send army",
     WEBSOCKET_MSG_UNIT_MOVE: "unit move",

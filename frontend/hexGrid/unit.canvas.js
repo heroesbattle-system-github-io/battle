@@ -15,8 +15,8 @@ if (window.devicePixelRatio) {
 }
 
 ctx.fillStyle = "transparent";
-    ctx.fillRect(0, 0, width, height);
-    ctx.translate(width / 2, height / 2);
+ctx.fillRect(0, 0, width, height);
+ctx.translate(width / 2, height / 2);
 
 
 const ARMY_TYPE_INFERNO = "inferno",
@@ -104,7 +104,6 @@ function findOutArmyByArmyType(armyType, playerType) {
 }
 
 function animateUnitWalk(animationData, stableMovePath, dynamicMovePath) {
-    console.log(stableMovePath)
     let enemyType = FIRST_PLAYER
     if (animationData.playerType === FIRST_PLAYER) enemyType = SECOND_PLAYER;
 
@@ -165,14 +164,17 @@ function animateUnitWalk(animationData, stableMovePath, dynamicMovePath) {
 
         if (stableMovePath[1] === undefined) {
             cancelAnimationFrame(requestFrameId);
+            if (animationData.playerTypeUnit === animationData.playerType)
+                _socketHelper.sendTurnEndStatus(animationData.gameID)
+
             return;
         }
-        
+
         dynamicMovePath[0].x += ((stableMovePath[1].x - stableMovePath[0].x) / 40);
         dynamicMovePath[0].y += ((stableMovePath[1].y - stableMovePath[0].y) / 40);
 
         if (Math.abs(dynamicMovePath[0].x) > Math.abs(stableMovePath[0].x - stableMovePath[1].x)) {
-            if (playerData.playerType === FIRST_PLAYER) {
+            if (animationData.playerTypeUnit === FIRST_PLAYER) {
                 _unitHelper.FIRST_PLAYER_UNIT_POSTION[animationData.unitId].x =
                     specDrawData.unitPositions[animationData.unitId].x + dynamicMovePath[0].x
 
@@ -189,5 +191,9 @@ function animateUnitWalk(animationData, stableMovePath, dynamicMovePath) {
             dynamicMovePath.shift();
         }
     }
-    else cancelAnimationFrame(requestFrameId)
+    else {
+        cancelAnimationFrame(requestFrameId)
+        if (animationData.playerTypeUnit === animationData.playerType)
+            _socketHelper.sendTurnEndStatus(animationData.gameID)
+    }
 }

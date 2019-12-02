@@ -37,6 +37,11 @@ webSocketServer.on('connection', function (ws) {
         }
 
         break;
+
+      case _helper.WEBSOCKET_MSG_END_TURN:
+        console.log("end turn")
+
+        break;
       default:
         break;
     }

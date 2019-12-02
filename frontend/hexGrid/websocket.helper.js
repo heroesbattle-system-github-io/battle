@@ -57,6 +57,10 @@ const _socketHelper = {
         })
     },
 
+    sendTurnEndStatus(gameID) {
+        socket.send(`{"gameID": ${gameID}, "message":"End Turn"}`)
+    },
+
     btnStyledOnClick(ev) {
         const target = ev.target;
         target.style.outline = "1px solid black"
